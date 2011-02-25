@@ -1,4 +1,3 @@
-; $Id$
 name = Profile2
 description = Supports configurable user profiles.
 core = 7.x
