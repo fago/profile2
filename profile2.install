@@ -57,7 +57,7 @@ function profile2_schema() {
     ),
     'foreign keys' => array(
       'uid' => array(
-        'table' => 'user',
+        'table' => 'users',
         'columns' => array('uid' => 'uid'),
       ),
       'type' => array(
