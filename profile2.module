@@ -239,28 +239,12 @@ function profile2_delete_multiple(array $pids) {
 }
 
 /**
- * Deletes all profiles for given user.
- *
- * @param $account
- *  A user account.
- */
-function profile2_delete_all_by_user($account) {
-  foreach (profile2_load_by_user($account) as $profile) {
-    profile2_delete($profile);
-  }
-}
-
-/**
- * Implements hook_user_cancel().
- */
-function profile2_user_cancel($edit, $account, $method) {
-  profile2_delete_all_by_user($account);
-}
-/**
  * Implements hook_user_delete().
  */
 function profile2_user_delete($account) {
-  profile2_delete_all_by_user($account);
+  foreach (profile2_load_by_user($account) as $profile) {
+    profile2_delete($profile);
+  }
 }
 
 /**
