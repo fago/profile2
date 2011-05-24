@@ -190,6 +190,8 @@ function profile2_load_multiple($pids = array(), $conditions = array(), $reset =
  *   Either a single profile or an array of profiles keyed by profile type.
  *
  * @see profile2_load_multiple()
+ * @see profile2_profile2_delete()
+ * @see Profile::save()
  */
 function profile2_load_by_user($account, $type_name = NULL) {
   // Use a separate query to determine all profile ids per user and cache them.
@@ -219,6 +221,15 @@ function profile2_load_by_user($account, $type_name = NULL) {
   }
   // Return an array containing profiles keyed by profile type.
   return $cache[$uid] ? array_combine(array_keys($cache[$uid]), profile2_load_multiple($cache[$uid])) : $cache[$uid];
+}
+
+/**
+ * Implements hook_profile2_delete().
+ */
+function profile2_profile2_delete($profile) {
+  // Clear the static cache from profile2_load_by_user().
+  $cache = &drupal_static('profile2_load_by_user', array());
+  unset($cache[$profile->uid][$profile->type]);
 }
 
 /**
@@ -626,6 +637,15 @@ class Profile extends Entity {
       $content['empty']['#markup'] = '<em class="profile2-no-data">' . t('There is no profile data yet.') . '</em>';
     }
     return entity_get_controller($this->entityType)->buildContent($this, $view_mode, $langcode, $content);
+  }
+
+  public function save() {
+    parent::save();
+    // Update the static cache from profile2_load_by_user().
+    $cache = &drupal_static('profile2_load_by_user', array());
+    if (isset($cache[$this->uid])) {
+      $cache[$this->uid][$this->type] = $this->pid;
+    }
   }
 }
 

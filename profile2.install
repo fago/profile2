@@ -10,9 +10,8 @@
  */
 function profile2_install() {
   // Add an initial profile type, but only if installed manually. In case the
-  // module is installed via an installation profile, a batch is active and
-  // we skip that.
-  if (!batch_get()) {
+  // module is installed via an installation profile, skip that.
+  if (!drupal_installation_attempted()) {
     $type = entity_create('profile2_type', array(
       'type' => 'main',
       'label' => t('Main profile'),
