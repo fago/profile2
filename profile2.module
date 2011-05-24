@@ -195,7 +195,7 @@ function profile2_load_by_user($account, $type_name = NULL) {
   // Use a separate query to determine all profile ids per user and cache them.
   // That way we can look up profiles by id and benefit from the static cache
   // of the entity loader.
-  $cache = drupal_static(__FUNCTION__, array());
+  $cache = &drupal_static(__FUNCTION__, array());
   $uid = is_object($account) ? $account->uid : $account;
 
   if (!isset($cache[$uid])) {
