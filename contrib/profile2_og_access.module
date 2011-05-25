@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * @file
+ * Profile2 og access integration module.
+ */
+
+/**
+ * Implements hook_og_permission().
+ */
+function profile2_og_access_og_permission() {
+  $permissions = array();
+  // Generate per profile type permissions.
+  foreach (profile2_get_types() as $type) {
+    $type_name = check_plain($type->type);
+    $permissions += array(
+      "edit any $type_name profile" => array(
+        'title' => t('%type_name: Edit any profile', array('%type_name' => $type->label)),
+      ),
+      "view any $type_name profile" => array(
+        'title' => t('%type_name: View any profile', array('%type_name' => $type->label)),
+      ),
+    );
+  }
+  return $permissions;
+}
+
+/**
+ * Implements hook_profile2_access().
+ *
+ * @see profile2_profile2_access()
+ * @see og_node_access()
+ */
+function profile2_og_access_profile2_access($op, $profile = NULL, $account = NULL) {
+  if (isset($profile) && ($type_name = $profile->type) && $profile->identifier() && $op != 'delete') {
+    if (og_is_group_content_type('profile2', $profile->type) && $gids = og_get_entity_groups('profile2', $profile)) {
+      // We don't have a context, so we need to get all the permissions
+      // of all the groups. We don't intersect with the user's group, as
+      // groups might allow anonymous members access.
+      foreach ($gids as $gid) {
+        if (og_user_access($gid, "$op any $type_name profile", $account)) {
+          return TRUE;
+        }
+      }
+    }
+  }
+}
