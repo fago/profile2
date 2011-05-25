@@ -319,13 +319,15 @@ function profile2_profile2_type_delete($type) {
  */
 function profile2_user_view($account) {
   foreach (profile2_get_types() as $type => $profile_type) {
-    if ($profile_type->userView && ($profile = profile2_load_by_user($account, $type))) {
-      $account->content['profile_' . $type] = array(
-        '#type' => 'user_profile_category',
-        '#title' => $profile->label,
-        '#prefix' => '<a id="profile-' . $profile->type . '"></a>',
-      );
-      $account->content['profile_' . $type]['view'] = $profile->view('account');
+    if ($profile_type->userView && $profile = profile2_load_by_user($account, $type)) {
+      if (profile2_access('view', $profile)) {
+        $account->content['profile_' . $type] = array(
+          '#type' => 'user_profile_category',
+          '#title' => $profile->label,
+          '#prefix' => '<a id="profile-' . $profile->type . '"></a>',
+        );
+        $account->content['profile_' . $type]['view'] = $profile->view('account');
+      }
     }
   }
 }

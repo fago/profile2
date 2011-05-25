@@ -115,10 +115,16 @@ class ProfileCRUDTestCase extends DrupalWebTestCase {
     $this->drupalGet('user/' . $user1->uid . '/edit/main');
     $this->assertText(t('Access denied'), 'Access has been denied.');
 
+    // Test creating a profile manually (e.g. by an admin) and ensure the user
+    // may not see it.
+    profile_create(array('type' => 'main', 'uid' => $user1->uid))->save();
+    $this->drupalGet('user/' . $user1->uid);
+    $this->assertNoText(t('Main profile'), 'Profile data is not visible to the owner.');
+
     $user2 = $this->drupalCreateUser(array('edit own main profile', 'view own main profile'));
     $this->drupalLogin($user2);
 
-    // Create profiles for the user1.
+    // Create profiles for the user2.
     $edit['profile_main[profile_fullname][und][0][value]'] = $this->randomName();
     $this->drupalPost('user/' . $user2->uid . '/edit/main', $edit, t('Save'));
     $this->assertText(t('The changes have been saved.'), 'Profile saved.');
