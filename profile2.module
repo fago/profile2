@@ -714,14 +714,14 @@ function profile2_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
  * Implements hook_field_access().
  */
 function profile2_field_access($op, $field, $entity_type, $profile = NULL, $account = NULL) {
-  if ($entity_type == 'profile2' && $op == 'view' && !user_access('administer profiles', $account)) {
-    // For profiles, deny general view access.
+  if ($entity_type == 'profile2' && $op == 'view' && !empty($field['settings']['profile2_private']) && !user_access('administer profiles', $account)) {
+    // For profiles, deny general view access for private fields.
     if (!isset($profile)) {
       return FALSE;
     }
     // Also deny view access, if someone else views a private field.
     $account = isset($account) ? $account : $GLOBALS['user'];
-    if ($account->uid != $profile->uid && !empty($field['settings']['profile2_private'])) {
+    if ($account->uid != $profile->uid) {
       return FALSE;
     }
   }
