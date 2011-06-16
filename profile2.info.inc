@@ -39,7 +39,7 @@ class Profile2MetadataController extends EntityDefaultMetadataController {
       'setter callback' => 'entity_property_setter_method',
       'setter permission' => 'administer profiles',
       'required' => TRUE,
-      'views field' => 'uid',
+      'schema field' => 'uid',
     );
     return $info;
   }
