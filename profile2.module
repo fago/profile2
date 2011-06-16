@@ -40,7 +40,7 @@ function profile2_entity_info() {
   $return['profile2_type'] = array(
     'label' => t('Profile type'),
     'entity class' => 'ProfileType',
-    'controller class' => 'EntityAPIController',
+    'controller class' => 'EntityAPIControllerExportable',
     'base table' => 'profile_type',
     'fieldable' => FALSE,
     'bundle of' => 'profile2',
@@ -138,7 +138,7 @@ function profile2_permission() {
  *   Depending whether $type isset, an array of profile types or a single one.
  */
 function profile2_get_types($type_name = NULL) {
-  $types = entity_load('profile2_type', isset($type_name) ? array($type_name) : FALSE);
+  $types = entity_load_multiple_by_name('profile2_type', isset($type_name) ? array($type_name) : FALSE);
   return isset($type_name) ? reset($types) : $types;
 }
 
