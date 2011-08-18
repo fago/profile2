@@ -146,6 +146,7 @@ function profile2_page_entity_info_alter(&$entity_info) {
     'custom settings' => FALSE,
   );
   $entity_info['profile2']['uri callback'] = 'profile2_page_uri_callback';
+  $entity_info['profile2']['form callback'] = 'profile2_page_form_callback';
 }
 
 /**
@@ -160,6 +161,15 @@ function profile2_page_uri_callback($profile) {
   }
   // Fall back to the default callback.
   return $profile->defaultUri();
+}
+
+/**
+ * Form callback for entity_form().
+ */
+function profile2_page_form_callback($profile) {
+  // Pre-populate the form-state with the right form include.
+  form_load_include($form_state, 'inc', 'profile2_page');
+  return entity_ui_get_form('profile2', $profile, 'edit', $form_state);
 }
 
 /**
