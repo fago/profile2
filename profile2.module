@@ -504,7 +504,7 @@ function profile2_category_access($account, $type_name) {
   // As there might be no profile yet, create a new object for being able to run
   // a proper access check.
   $profile = profile_create(array('type' => $type_name, 'uid' => $account->uid));
-  return ($account->uid > 0 && profile2_access('edit', $profile));
+  return ($account->uid > 0 && $profile->type()->userCategory && profile2_access('edit', $profile));
 }
 
 /**
