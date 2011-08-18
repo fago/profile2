@@ -65,7 +65,7 @@ function profile2_type_form($form, &$form_state, $profile_type, $op = 'edit') {
     '#weight' => 40,
   );
 
-  if (!$profile_type->isLocked() && $op != 'add') {
+  if (!$profile_type->isLocked() && $op != 'add' && $op != 'clone') {
     $form['actions']['delete'] = array(
       '#type' => 'submit',
       '#value' => t('Delete profile type'),
