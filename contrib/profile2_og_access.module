@@ -29,19 +29,9 @@ function profile2_og_access_og_permission() {
  * Implements hook_profile2_access().
  *
  * @see profile2_profile2_access()
- * @see og_node_access()
  */
 function profile2_og_access_profile2_access($op, $profile = NULL, $account = NULL) {
   if (isset($profile) && ($type_name = $profile->type) && $profile->identifier() && $op != 'delete') {
-    if (og_is_group_content_type('profile2', $profile->type) && $gids = og_get_entity_groups('profile2', $profile)) {
-      // We don't have a context, so we need to get all the permissions
-      // of all the groups. We don't intersect with the user's group, as
-      // groups might allow anonymous members access.
-      foreach ($gids as $gid) {
-        if (og_user_access($gid, "$op any $type_name profile", $account)) {
-          return TRUE;
-        }
-      }
-    }
+    return og_user_access_entity("$op any $type_name profile", 'profile2', $profile, $account);
   }
 }
