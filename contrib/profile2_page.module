@@ -193,8 +193,8 @@ function profile2_page_profile2_type_insert(ProfileType $type) {
  * Implements hook_profile2_type_update().
  */
 function profile2_page_profile2_type_update(ProfileType $type) {
-  // Rebuild the menu if use_page has been changed.
-  if (empty($type->data['use_page']) != empty($type->original->data['use_page'])) {
+  // Rebuild the menu if use_page or the type name has been changed.
+  if (empty($type->data['use_page']) != empty($type->original->data['use_page']) || ($type->data['use_page'] &&  $type->type != $type->original->type)) {
     menu_rebuild();
   }
 }
