@@ -37,6 +37,25 @@ function profile2_entity_info() {
       'metadata controller class' => 'Profile2MetadataController'
     ),
   );
+
+  // Add bundle info but bypass entity_load() as we cannot use it here.
+  $types = db_select('profile_type', 'p')
+    ->fields('p')
+    ->execute()
+    ->fetchAllAssoc('type');
+
+  foreach ($types as $type => $info) {
+    $return['profile2']['bundles'][$type] = array(
+      'label' => $info->label,
+      'admin' => array(
+        'path' => 'admin/structure/profiles/manage/%profile2_type',
+        'real path' => 'admin/structure/profiles/manage/' . $type,
+        'bundle argument' => 4,
+        'access arguments' => array('administer profiles'),
+      ),
+    );
+  }
+
   $return['profile2_type'] = array(
     'label' => t('Profile type'),
     'entity class' => 'ProfileType',
@@ -59,27 +78,8 @@ function profile2_entity_info() {
       'controller class' => 'Profile2TypeUIController',
     ),
   );
-  return $return;
-}
 
-/**
- * Implements hook_entity_info_alter().
- *
- * Use this hook to specify profile bundles to avoid a recursion, as loading
- * the profile types needs the entity info too.
- */
-function profile2_entity_info_alter(&$entity_info) {
-  foreach (profile2_get_types() as $type => $info) {
-    $entity_info['profile2']['bundles'][$type] = array(
-      'label' => $info->label,
-      'admin' => array(
-        'path' => 'admin/structure/profiles/manage/%profile2_type',
-        'real path' => 'admin/structure/profiles/manage/' . $type,
-        'bundle argument' => 4,
-        'access arguments' => array('administer profiles'),
-      ),
-    );
-  }
+  return $return;
 }
 
 /**
