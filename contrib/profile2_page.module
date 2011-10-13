@@ -181,34 +181,6 @@ function profile2_page_own_title($type_name) {
 }
 
 /**
- * Implements hook_profile2_type_insert().
- */
-function profile2_page_profile2_type_insert(ProfileType $type) {
-  if (!empty($type->data['use_page'])) {
-    menu_rebuild();
-  }
-}
-
-/**
- * Implements hook_profile2_type_update().
- */
-function profile2_page_profile2_type_update(ProfileType $type) {
-  // Rebuild the menu if use_page or the type name has been changed.
-  if (empty($type->data['use_page']) != empty($type->original->data['use_page']) || ($type->data['use_page'] &&  $type->type != $type->original->type)) {
-    menu_rebuild();
-  }
-}
-
-/**
- * Implements hook_profile2_type_delete().
- */
-function profile2_page_profile2_type_delete(ProfileType $type) {
-  if (!empty($type->data['use_page'])) {
-    menu_rebuild();
-  }
-}
-
-/**
  * Implements hook_form_FORM_ID_alter() for the profile2 type form..
  */
 function profile2_page_form_profile2_type_form_alter(&$form, &$form_state) {

@@ -307,18 +307,36 @@ function profile2_profile2_load($profiles) {
 }
 
 /**
- * Implements hook_profile2_type_delete()
+ * Implements hook_profile2_type_insert().
  */
+function profile2_profile2_type_insert(ProfileType $type) {
+  // Always rebuild the menu in case a profile type is inserted or changed, as
+  // also extension modules like profile2 page might need menu rebuilds. In
+  // order to avoid possible multiple rebuilds of modules we just do it always
+  // but once here.
+  menu_rebuild();
+}
+
+/**
+ * Implements hook_profile2_type_update().
+ */
+function profile2_profile2_type_update(ProfileType $type) {
+  // @see profile2_profile2_type_insert()
+  menu_rebuild();
+}
+
+/**
+* Implements hook_profile2_type_delete()
+*/
 function profile2_profile2_type_delete($type) {
   // Delete all profiles of this type.
   if ($pids = array_keys(profile2_load_multiple(FALSE, array('type' => $type->type)))) {
     profile2_delete_multiple($pids);
   }
-  // Rebuild the menu as any (user-category) menu items should be gone now.
-  if ($type->userCategory) {
-    menu_rebuild();
-  }
+  // @see profile2_profile2_type_insert()
+  menu_rebuild();
 }
+
 
 /**
  * Implements hook_user_view().
