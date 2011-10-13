@@ -12,6 +12,8 @@ function profile2_entity_info() {
   $return = array(
     'profile2' => array(
       'label' => t('Profile'),
+      'plural label' => t('Profiles'),
+      'description' => t('Profile2 user profiles.'),
       'entity class' => 'Profile',
       'controller class' => 'EntityAPIController',
       'base table' => 'profile',
@@ -58,6 +60,8 @@ function profile2_entity_info() {
 
   $return['profile2_type'] = array(
     'label' => t('Profile type'),
+    'plural label' => t('Profile types'),
+    'description' => t('Profiles types of Profile2 user profiles.'),
     'entity class' => 'ProfileType',
     'controller class' => 'EntityAPIControllerExportable',
     'base table' => 'profile_type',
