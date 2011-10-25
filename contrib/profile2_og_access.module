@@ -32,6 +32,10 @@ function profile2_og_access_og_permission() {
  */
 function profile2_og_access_profile2_access($op, $profile = NULL, $account = NULL) {
   if (isset($profile) && ($type_name = $profile->type) && $profile->identifier() && $op != 'delete') {
-    return og_user_access_entity("$op any $type_name profile", 'profile2', $profile, $account);
+    // Only return TRUE if og grants access. So other modules may still grant
+    // access in case og does not.
+    if (og_user_access_entity("$op any $type_name profile", 'profile2', $profile, $account)) {
+      return TRUE;
+    }
   }
 }
