@@ -58,6 +58,12 @@ function profile2_entity_info() {
     );
   }
 
+  // Support entity cache module.
+  if (module_exists('entitycache')) {
+    $return['profile2']['field cache'] = FALSE;
+    $return['profile2']['entity cache'] = TRUE;
+  }
+
   $return['profile2_type'] = array(
     'label' => t('Profile type'),
     'plural label' => t('Profile types'),
