@@ -194,7 +194,7 @@ function profile2_page_title($type_name, $profile2 = NULL) {
   if (!isset($profile2)) {
     return t('My @profile-label', array('@profile-label' => drupal_strtolower($type->label)));
   }
-  return check_plain(drupal_ucfirst($profile2->label()));
+  return drupal_ucfirst($profile2->label());
 }
 
 /**
