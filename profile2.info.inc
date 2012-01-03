@@ -43,6 +43,22 @@ class Profile2MetadataController extends EntityDefaultMetadataController {
       'required' => TRUE,
       'schema field' => 'uid',
     );
+
+    $properties['created'] = array(
+      'label' => t("Date created"),
+      'type' => 'date',
+      'description' => t("The date the profile was created."),
+      'setter callback' => 'entity_property_verbatim_set',
+      'setter permission' => 'administer profiles',
+      'schema field' => 'created',
+    );
+    $properties['changed'] = array(
+      'label' => t("Date changed"),
+      'type' => 'date',
+      'schema field' => 'changed',
+      'description' => t("The date the profile was most recently updated."),
+    );
+
     return $info;
   }
 }

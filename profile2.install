@@ -57,6 +57,16 @@ function profile2_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the profile was created.',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the profile was most recently saved.',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
     ),
     'indexes' => array(
       'uid' => array('uid'),
@@ -177,4 +187,20 @@ function profile2_update_7101() {
       ->condition('type', $type_name)
       ->execute();
   }
+}
+
+/**
+ * Add a created and a changed column to profiles.
+ */
+function profile2_update_7102() {
+  db_add_field('profile', 'created', array(
+    'description' => 'The Unix timestamp when the profile was created.',
+    'type' => 'int',
+    'not null' => FALSE,
+  ));
+  db_add_field('profile', 'changed', array(
+    'description' => 'The Unix timestamp when the profile was most recently saved.',
+    'type' => 'int',
+    'not null' => FALSE,
+  ));
 }
