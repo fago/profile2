@@ -27,12 +27,12 @@ function profile2_entity_info() {
       'entity keys' => array(
         'id' => 'pid',
         'bundle' => 'type',
+        'label' => 'label',
       ),
       'bundles' => array(),
       'bundle keys' => array(
         'bundle' => 'type',
       ),
-      'label callback' => 'entity_class_label',
       'uri callback' => 'entity_class_uri',
       'access callback' => 'profile2_access',
       'module' => 'profile2',
@@ -304,19 +304,6 @@ function profile2_type_save(ProfileType $type) {
  */
 function profile2_type_delete(ProfileType $type) {
   $type->delete();
-}
-
-/**
- * Implements hook_profile2_load()
- */
-function profile2_profile2_load($profiles) {
-  $types = profile2_get_types();
-  // Load the profile's label.
-  foreach ($profiles as $profile) {
-    if (isset($types[$profile->type])) {
-      $profile->label = $types[$profile->type]->label;
-    }
-  }
 }
 
 /**
@@ -626,6 +613,13 @@ function profile2_theme() {
  */
 class Profile extends Entity {
 
+  /**
+   * The profile label.
+   *
+   * @var string
+   */
+  public $label;
+
   public function __construct($values = array()) {
     if (isset($values['user'])) {
       $this->setUser($values['user']);
@@ -633,6 +627,11 @@ class Profile extends Entity {
     }
     if (isset($values['type']) && is_object($values['type'])) {
       $values['type'] = $values['type']->type;
+    }
+    if (!isset($values['label']) && isset($values['type']) && $type = profile2_get_types($values['type'])) {
+      // Initialize the label with the type label, so newly created profiles
+      // have that as interim label.
+      $values['label'] = $type->label;
     }
     parent::__construct($values, 'profile2');
   }
@@ -661,10 +660,6 @@ class Profile extends Entity {
    */
   public function type() {
     return profile2_get_types($this->type);
-  }
-
-  public function defaultLabel() {
-    return isset($this->label) ? $this->label : (isset($this->type) ? $this->type()->label : '');
   }
 
   /**

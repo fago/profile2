@@ -16,8 +16,10 @@ class Profile2MetadataController extends EntityDefaultMetadataController {
 
     $properties['label'] = array(
       'label' => t('Label'),
-      'description' => t('The profile label'),
-      'getter callback' => 'entity_property_getter_method',
+      'description' => t('The profile label.'),
+      'setter callback' => 'entity_property_verbatim_set',
+      'setter permission' => 'administer profiles',
+      'schema field' => 'label',
     );
 
     $properties['type'] = array(

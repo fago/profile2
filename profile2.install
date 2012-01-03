@@ -50,6 +50,13 @@ function profile2_schema() {
         'default' => NULL,
         'description' => "The {users}.uid of the associated user.",
       ),
+      'label' => array(
+        'description' => 'A human-readable label for this profile.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
     ),
     'indexes' => array(
       'uid' => array('uid'),
@@ -143,4 +150,31 @@ function profile2_update_7100() {
     'length' => 255,
     'not null' => FALSE,
   ));
+}
+
+/**
+ * Add a label column to profiles.
+ */
+function profile2_update_7101() {
+  db_add_field('profile', 'label', array(
+    'description' => 'A human-readable label for this profile.',
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => TRUE,
+    'default' => '',
+  ));
+  $types = db_select('profile_type', 'p')
+    ->fields('p')
+    ->execute()
+    ->fetchAllAssoc('type');
+
+  // Initialize with the type label.
+  foreach ($types as $type_name => $type) {
+    db_update('profile')
+      ->fields(array(
+        'label' => $type->label,
+      ))
+      ->condition('type', $type_name)
+      ->execute();
+  }
 }
