@@ -210,3 +210,36 @@ function profile2_page_form_profile2_type_form_alter(&$form, &$form_state) {
   );
   $form['data']['#tree'] = TRUE;
 }
+
+/**
+ * Implements hook_profile2_type_insert().
+ */
+function profile2_page_profile2_type_insert(ProfileType $type) {
+  // Do not directly issue menu rebuilds here to avoid potentially multiple
+  // rebuilds. Instead, let menu_get_item() issue the rebuild on the next page.
+  if (!empty($type->data['use_page'])) {
+    variable_set('menu_rebuild_needed', TRUE);
+  }
+}
+
+/**
+ * Implements hook_profile2_type_update().
+ */
+function profile2_page_profile2_type_update(ProfileType $type) {
+  // Rebuild the menu if use_page or the type name has been changed.
+  // @see profile2_page_profile2_type_insert()
+  if (empty($type->data['use_page']) != empty($type->original->data['use_page']) || ($type->data['use_page'] &&  $type->type != $type->original->type)) {
+    variable_set('menu_rebuild_needed', TRUE);
+  }
+}
+
+/**
+ * Implements hook_profile2_type_delete()
+ */
+function profile2_page_profile2_type_delete($type) {
+  // Do not directly issue menu rebuilds here to avoid potentially multiple
+  // rebuilds. Instead, let menu_get_item() issue the rebuild on the next page.
+  if (!empty($type->data['use_page'])) {
+    variable_set('menu_rebuild_needed', TRUE);
+  }
+}
