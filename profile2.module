@@ -576,9 +576,6 @@ function profile2_type_access($op, $type = NULL, $account = NULL) {
  */
 function profile2_theme() {
   return array(
-    'profile2_admin_type' => array(
-      'variables' => array('label' => NULL, 'type' => NULL),
-    ),
     'profile2' => array(
       'render element' => 'elements',
       'template' => 'profile2',
