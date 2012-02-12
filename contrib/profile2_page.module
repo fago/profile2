@@ -180,6 +180,7 @@ function profile2_page_uri_callback($profile) {
  */
 function profile2_page_form_callback($profile) {
   // Pre-populate the form-state with the right form include.
+  $form_state = form_state_defaults();
   form_load_include($form_state, 'inc', 'profile2_page');
   return entity_ui_get_form('profile2', $profile, 'edit', $form_state);
 }
