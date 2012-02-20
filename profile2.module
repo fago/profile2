@@ -33,6 +33,7 @@ function profile2_entity_info() {
       'bundle keys' => array(
         'bundle' => 'type',
       ),
+      'label callback' => 'entity_class_label',
       'uri callback' => 'entity_class_uri',
       'access callback' => 'profile2_access',
       'module' => 'profile2',
@@ -123,16 +124,16 @@ function profile2_permission() {
     $type_name = check_plain($type->type);
     $permissions += array(
       "edit own $type_name profile" => array(
-        'title' => t('%type_name: Edit own profile', array('%type_name' => $type->label)),
+        'title' => t('%type_name: Edit own profile', array('%type_name' => $type->getTranslation('label'))),
       ),
       "edit any $type_name profile" => array(
-        'title' => t('%type_name: Edit any profile', array('%type_name' => $type->label)),
+        'title' => t('%type_name: Edit any profile', array('%type_name' => $type->getTranslation('label'))),
       ),
       "view own $type_name profile" => array(
-        'title' => t('%type_name: View own profile', array('%type_name' => $type->label)),
+        'title' => t('%type_name: View own profile', array('%type_name' => $type->getTranslation('label'))),
       ),
       "view any $type_name profile" => array(
-        'title' => t('%type_name: View any profile', array('%type_name' => $type->label)),
+        'title' => t('%type_name: View any profile', array('%type_name' => $type->getTranslation('label'))),
       ),
     );
   }
@@ -366,7 +367,7 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
       // Wrap each profile form in a fieldset.
       $form['profile_' . $type_name] += array(
         '#type' => 'fieldset',
-        '#title' => check_plain($profile_type->label),
+        '#title' => check_plain($profile_type->getTranslation('label')),
       );
     }
   }
@@ -488,7 +489,7 @@ function profile2_user_categories() {
     if ($info->userCategory) {
       $data[] = array(
         'name' => $type,
-        'title' => $info->label,
+        'title' => $info->getTranslation('label'),
         // Add an offset so a weight of 0 appears right of the account category.
         'weight' => $info->weight + 3,
         'access callback' => 'profile2_category_access',
@@ -696,6 +697,15 @@ class Profile extends Entity {
     );
   }
 
+  public function defaultLabel() {
+    if (module_exists('profile2_i18n')) {
+      // Run the label through i18n_string() using the profile2_type label
+      // context, so the default label (= the type's label) gets translated.
+      return entity_i18n_string('profile2:profile2_type:' . $this->type . ':label', $this->label);
+    }
+    return $this->label;
+  }
+
   public function buildContent($view_mode = 'full', $langcode = NULL) {
     $content = array();
     // Assume newly create objects are still empty.
@@ -754,6 +764,18 @@ class ProfileType extends Entity {
    */
   public function isLocked() {
     return isset($this->status) && empty($this->is_new) && (($this->status & ENTITY_IN_CODE) || ($this->status & ENTITY_FIXED));
+  }
+
+  /**
+   * Overridden, to introduce the method for old entity API versions (BC).
+   *
+   * @todo Remove once we bump the required entity API version.
+   */
+  public function getTranslation($property, $langcode = NULL) {
+    if (module_exists('profile2_i18n')) {
+      return parent::getTranslation($property, $langcode);
+    }
+    return $this->$property;
   }
 }
 

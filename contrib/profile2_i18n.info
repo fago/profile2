@@ -1,0 +1,6 @@
+name = Profile2 translation
+description = Translate profile2 types.
+dependencies[] = profile2
+dependencies[] = i18n_string
+package = Multilingual - Internationalization
+core = 7.x

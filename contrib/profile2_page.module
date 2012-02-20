@@ -193,7 +193,7 @@ function profile2_page_title($type_name, $profile2 = NULL) {
   // If no profile is given, we are at the general path pointing to the own
   // profile.
   if (!isset($profile2)) {
-    return t('My @profile-label', array('@profile-label' => drupal_strtolower($type->label)));
+    return t('My @profile-label', array('@profile-label' => drupal_strtolower($type->getTranslation('label'))));
   }
   return drupal_ucfirst($profile2->label());
 }
