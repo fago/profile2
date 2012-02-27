@@ -310,10 +310,13 @@ function profile2_type_delete(ProfileType $type) {
 /**
 * Implements hook_profile2_type_delete()
 */
-function profile2_profile2_type_delete($type) {
-  // Delete all profiles of this type.
-  if ($pids = array_keys(profile2_load_multiple(FALSE, array('type' => $type->type)))) {
-    profile2_delete_multiple($pids);
+function profile2_profile2_type_delete(ProfileType $type) {
+  // Delete all profiles of this type but only if this is not a revert.
+  if (!$type->hasStatus(ENTITY_IN_CODE)) {
+    $pids = array_keys(profile2_load_multiple(FALSE, array('type' => $type->type)));
+    if ($pids) {
+      profile2_delete_multiple($pids);
+    }
   }
 }
 
