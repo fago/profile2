@@ -80,6 +80,34 @@ function profile2_page_menu() {
         'context' => MENU_CONTEXT_INLINE,
         'file' => 'profile2_page.inc',
       );
+      // Devel integration.
+      if (module_exists('devel')) {
+        $devel_path = drupal_get_path('module', 'devel');
+        $items[$path . '/%profile2_by_uid/devel'] = array(
+          'title' => 'Devel',
+          'page callback' => 'devel_load_object',
+          'file' => 'devel.pages.inc',
+          'file path' => $devel_path,
+          'page arguments' => array('profile2', $count),
+          'access arguments' => array('access devel information'),
+          'type' => MENU_LOCAL_TASK,
+          'weight' => 100,
+        );
+        $items[$path . '/%profile2_by_uid/devel/load'] = array(
+          'title' => 'Load',
+          'type' => MENU_DEFAULT_LOCAL_TASK,
+        );
+        $items[$path . '/%profile2_by_uid/devel/render'] = array(
+          'title' => 'Render',
+          'page callback' => 'devel_render_object',
+          'page arguments' => array('profile2', $count),
+          'access arguments' => array('access devel information'),
+          'file' => 'devel.pages.inc',
+          'file path' => $devel_path,
+          'type' => MENU_LOCAL_TASK,
+          'weight' => 100,
+        );
+      }
     }
   }
   return $items;
