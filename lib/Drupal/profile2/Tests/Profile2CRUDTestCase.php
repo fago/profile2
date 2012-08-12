@@ -1,9 +1,15 @@
 <?php
 
+namespace Drupal\profile2\Tests;
+
+use Drupal\simpletest\WebTestBase;
+
 /**
  * Test basic CRUD functionality.
  */
-class Profile2CRUDTestCase extends DrupalWebTestCase {
+class Profile2CRUDTestCase extends WebTestBase {
+
+  public static $modules = array('profile2', 'locale');
 
   public static function getInfo() {
     return array(
@@ -14,7 +20,7 @@ class Profile2CRUDTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('profile2', 'locale');
+    parent::setUp();
 
     profile2_type_save(new ProfileType(array(
       'type' => 'test',

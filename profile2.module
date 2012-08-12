@@ -37,7 +37,7 @@ function profile2_entity_info() {
       'uri callback' => 'entity_class_uri',
       'access callback' => 'profile2_access',
       'module' => 'profile2',
-      'metadata controller class' => 'Profile2MetadataController'
+      'metadata controller class' => 'Drupal\profile2\MetadataController',
     ),
   );
 
@@ -85,8 +85,7 @@ function profile2_entity_info() {
     // Enable the entity API's admin UI.
     'admin ui' => array(
       'path' => 'admin/structure/profiles',
-      'file' => 'profile2.admin.inc',
-      'controller class' => 'Profile2TypeUIController',
+      'controller class' => 'Drupal\profile2\TypeUIController',
     ),
   );
 
