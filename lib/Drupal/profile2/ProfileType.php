@@ -29,10 +29,6 @@ class ProfileType extends Entity {
   public $label;
   public $weight = 0;
 
-  public function __construct($values = array()) {
-    parent::__construct($values, 'profile2_type');
-  }
-
   /**
    * Returns whether the profile type is locked, thus may not be deleted or renamed.
    *

@@ -56,8 +56,7 @@ class Profile extends Entity {
    */
   public $changed;
 
-
-  public function __construct($values = array()) {
+  public function __construct(array $values = array(), $entity_type) {
     if (isset($values['user'])) {
       $this->setUser($values['user']);
       unset($values['user']);

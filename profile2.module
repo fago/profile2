@@ -5,6 +5,9 @@
  * Support for configurable user profiles.
  */
 
+use Drupal\profile2\Profile;
+use Drupal\profile2\ProfileType;
+
 /**
  * Implements hook_entity_info().
  */
@@ -12,11 +15,9 @@ function profile2_entity_info() {
   $return = array(
     'profile2' => array(
       'label' => t('Profile'),
-      'plural label' => t('Profiles'),
-      'description' => t('Profile2 user profiles.'),
-      'entity class' => 'Profile',
-      'controller class' => 'EntityAPIController',
+      'entity class' => 'Drupal\profile2\Profile',
       'base table' => 'profile',
+      'uri callback' => 'profile2_uri',
       'fieldable' => TRUE,
       'view modes' => array(
         'account' => array(
@@ -67,14 +68,12 @@ function profile2_entity_info() {
 
   $return['profile2_type'] = array(
     'label' => t('Profile type'),
-    'plural label' => t('Profile types'),
-    'description' => t('Profiles types of Profile2 user profiles.'),
-    'entity class' => 'ProfileType',
-    'controller class' => 'EntityAPIControllerExportable',
+    'entity class' => 'Drupal\profile2\ProfileType',
     'base table' => 'profile_type',
     'fieldable' => FALSE,
     'bundle of' => 'profile2',
     'exportable' => TRUE,
+    'uri callback' => 'profile2_type_uri',
     'entity keys' => array(
       'id' => 'id',
       'name' => 'type',
@@ -90,6 +89,30 @@ function profile2_entity_info() {
   );
 
   return $return;
+}
+
+/**
+ * Entity uri callback.
+ *
+ * @param Drupal\profile2\Profile $profile
+ *   A Profile entity.
+ */
+function profile2_uri(Profile $profile) {
+  return array(
+    'path' => 'admin/structure/profiles',
+  );
+}
+
+/**
+ * Entity uri callback.
+ *
+ * @param Drupal\profile2\ProfileType $profile_type
+ *   A ProfileType entity.
+ */
+function profile2_type_uri(ProfileType $profile) {
+  return array(
+    'path' => 'admin/structure/profiles/manage',
+  );
 }
 
 /**
