@@ -86,7 +86,7 @@ class Profile2CRUDTestCase extends WebTestBase {
     $this->assertEqual($profiles['test2']->pid, $profiles2['test2']->pid, 'Profile successfully updated.');
 
     // Delete a profile type.
-    profile2_type_delete(profile2_get_types('test'));
+    profile2_type_load('test')->delete();
     // Try deleting multiple profiles by deleting all existing profiles.
     $pids = array_keys(profile2_load_multiple(FALSE));
     profile2_delete_multiple($pids);

@@ -64,12 +64,12 @@ class Profile extends Entity {
     if (isset($values['type']) && is_object($values['type'])) {
       $values['type'] = $values['type']->type;
     }
-    if (!isset($values['label']) && isset($values['type']) && $type = profile2_get_types($values['type'])) {
+    if (!isset($values['label']) && isset($values['type']) && $type = profile2_type_load($values['type'])) {
       // Initialize the label with the type label, so newly created profiles
       // have that as interim label.
       $values['label'] = $type->label;
     }
-    parent::__construct($values, 'profile2');
+    parent::__construct($values, $entity_type);
   }
 
   /**
@@ -95,7 +95,21 @@ class Profile extends Entity {
    * @return ProfileType
    */
   public function type() {
-    return profile2_get_types($this->type);
+    return profile2_type_load($this->type);
+  }
+
+  /**
+   * Overwrites EntityInterface::id().
+   */
+  public function id() {
+    return isset($this->pid) ? $this->pid : NULL;
+  }
+
+  /**
+   * Overwrites EntityInterface::bundle().
+   */
+  public function bundle() {
+    return $this->type;
   }
 
   /**

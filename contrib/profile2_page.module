@@ -217,7 +217,7 @@ function profile2_page_form_callback($profile) {
  * Menu title callback.
  */
 function profile2_page_title($type_name, $profile2 = NULL) {
-  $type = profile2_get_types($type_name);
+  $type = profile2_type_load($type_name);
   // If no profile is given, we are at the general path pointing to the own
   // profile.
   if (!isset($profile2)) {
