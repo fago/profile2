@@ -3,13 +3,15 @@
 namespace Drupal\profile2\Tests;
 
 use Drupal\simpletest\WebTestBase;
+use Drupal\profile2\Profile;
+use Drupal\profile2\ProfileType;
 
 /**
  * Test basic CRUD functionality.
  */
 class Profile2CRUDTestCase extends WebTestBase {
 
-  public static $modules = array('profile2', 'locale');
+  public static $modules = array('profile2', 'config');
 
   public static function getInfo() {
     return array(
@@ -23,16 +25,16 @@ class Profile2CRUDTestCase extends WebTestBase {
     parent::setUp();
 
     profile2_type_save(new ProfileType(array(
-      'type' => 'test',
+      'id' => 'test',
       'label' => 'label',
       'weight' => 0
-    )));
+    ), 'profile2_type'));
     profile2_type_save(new ProfileType(array(
-      'type' => 'test2',
+      'id' => 'test2',
       'label' => 'label2',
       'weight' => 2
-    )));
-    profile2_load_multiple(FALSE, array(), TRUE);
+    ), 'profile2_type'));
+    profile2_load_multiple(array(), TRUE);
 
     // Add a field to main type, which is created during module installation.
     $field = array(
@@ -87,8 +89,9 @@ class Profile2CRUDTestCase extends WebTestBase {
 
     // Delete a profile type.
     profile2_type_load('test')->delete();
+
     // Try deleting multiple profiles by deleting all existing profiles.
-    $pids = array_keys(profile2_load_multiple(FALSE));
+    $pids = array_keys(profile2_load_multiple());
     profile2_delete_multiple($pids);
   }
 
@@ -97,17 +100,16 @@ class Profile2CRUDTestCase extends WebTestBase {
    */
   function testRegistrationIntegration() {
     // Allow registration by site visitors without administrator approval.
-    variable_set('user_register', 1);
+    config('user.settings')->set('register', USER_REGISTER_VISITORS)->save();
     $edit = array();
     $edit['name'] = $name = $this->randomName();
     $edit['mail'] = $mail = $edit['name'] . '@example.com';
     $edit['profile_main[profile_fullname][und][0][value]'] = $this->randomName();
     $this->drupalPost('user/register', $edit, t('Create new account'));
     $this->assertText(t('A welcome message with further instructions has been sent to your e-mail address.'), t('User registered successfully.'));
-    $return = user_load_multiple(array(), array('name' => $name, 'mail' => $mail));
-    $new_user = reset($return);
-    $this->assertTrue($new_user->status, t('New account is active after registration.'));
-    $this->assertEqual(profile2_load_by_user($new_user, 'main')->profile_fullname[LANGUAGE_NONE][0]['value'], $edit['profile_main[profile_fullname][und][0][value]'], 'Profile created.');
+    $new_user = user_load_by_name($name);
+    $this->assertTrue((bool) $new_user->status, t('New account is active after registration.'));
+    $this->assertEqual(profile2_load_by_user($new_user, 'main')->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_main[profile_fullname][und][0][value]'], 'Profile created.');
   }
 
   /**
@@ -117,6 +119,7 @@ class Profile2CRUDTestCase extends WebTestBase {
     user_role_revoke_permissions(DRUPAL_AUTHENTICATED_RID, array('edit own main profile', 'view own main profile'));
     $user1 = $this->drupalCreateUser();
     $this->drupalLogin($user1);
+
     // Make sure access is denied to the profile.
     $this->drupalGet('user/' . $user1->uid . '/edit/main');
     $this->assertText(t('Access denied'), 'Access has been denied.');
@@ -134,7 +137,7 @@ class Profile2CRUDTestCase extends WebTestBase {
     $edit['profile_main[profile_fullname][und][0][value]'] = $this->randomName();
     $this->drupalPost('user/' . $user2->uid . '/edit/main', $edit, t('Save'));
     $this->assertText(t('The changes have been saved.'), 'Profile saved.');
-    $this->assertEqual(profile2_load_by_user($user2, 'main')->profile_fullname[LANGUAGE_NONE][0]['value'], $edit['profile_main[profile_fullname][und][0][value]'], 'Profile edited.');
+    $this->assertEqual(profile2_load_by_user($user2, 'main')->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_main[profile_fullname][und][0][value]'], 'Profile edited.');
 
     $this->drupalGet('user/' . $user2->uid);
     $this->assertText(check_plain($edit['profile_main[profile_fullname][und][0][value]']), 'Profile displayed.');

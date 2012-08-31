@@ -404,7 +404,7 @@ function profile2_type_delete(ProfileType $type) {
 */
 function profile2_profile2_type_delete(ProfileType $type) {
   // Delete all profiles of this type.
-  $pids = array_keys(profile2_load_multiple_by_properties(array('type' => $type->type)));
+  $pids = array_keys(profile2_load_multiple_by_properties(array('type' => $type->id())));
   if ($pids) {
     profile2_delete_multiple($pids);
   }
@@ -422,7 +422,7 @@ function profile2_user_view($account, $view_mode, $langcode) {
           '#title' => $profile->label,
           '#prefix' => '<a id="profile-' . $profile->type . '"></a>',
         );
-        $account->content['profile_' . $type]['view'] = $profile->view('account');
+        $account->content['profile_' . $type]['view'] = $profile->buildContent('account');
       }
     }
   }
@@ -511,7 +511,7 @@ function profile2_attach_form(&$form, &$form_state) {
     }
   }
   $form['#validate'][] = 'profile2_form_validate_handler';
-  $form['#submit'][] = 'profile2_form_submit_handler';
+  $form['actions']['submit']['#submit'][] = 'profile2_form_submit_handler';
 }
 
 /**
