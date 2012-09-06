@@ -455,7 +455,6 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
       );
     }
   }
-
   $form['#validate'][] = 'profile2_user_form_validate';
   $form['actions']['submit']['#submit'][] = 'profile2_user_form_submit';
 }
@@ -479,7 +478,6 @@ function profile2_user_form($form, &$form_state, User $user, ProfileType $profil
     '#type' => 'submit',
     '#value' => t('Save'),
   );
-
   return $form;
 }
 
@@ -658,7 +656,6 @@ function profile2_profile_edit_access(ProfileType $type, User $account) {
   if (empty($profile)) {
     $profile = entity_create('profile2', array('uid' => $account->uid, 'type' => $type->id()));
   }
-
   return profile2_access('edit', $profile);
 }
 

@@ -32,7 +32,6 @@ function profile2_type_form($form, &$form_state, ProfileType $profile_type = NUL
     '#required' => TRUE,
     '#size' => 30,
   );
-  // Machine-readable type name.
   $form['id'] = array(
     '#type' => 'machine_name',
     '#default_value' => $profile_type->id(),
