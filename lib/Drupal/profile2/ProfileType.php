@@ -7,13 +7,13 @@
 
 namespace Drupal\profile2;
 
-use Drupal\config\ConfigurableBase;
+use Drupal\config\ConfigEntityBase;
 
 /**
  * Use a separate class for profile types so we can specify some defaults
  * modules may alter.
  */
-class ProfileType extends ConfigurableBase {
+class ProfileType extends ConfigEntityBase {
 
   public $id;
   public $uuid;
