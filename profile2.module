@@ -83,8 +83,9 @@ function profile2_entity_info() {
  *   A Profile entity.
  */
 function profile2_profile_uri(Profile $profile) {
+  // @todo Call into user_uri() to ensure consistent URIs?
   return array(
-    'path' => 'admin/structure/profiles',
+    'path' => 'user/' . $profile->uid,
   );
 }
 
