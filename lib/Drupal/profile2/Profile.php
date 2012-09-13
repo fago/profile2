@@ -7,7 +7,7 @@
 
 namespace Drupal\profile2;
 
-use Drupal\entity\Entity;
+use Drupal\Core\Entity\Entity;
 
 /**
  * The class used for profile entities.
