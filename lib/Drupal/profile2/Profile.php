@@ -144,32 +144,6 @@ class Profile extends Entity {
     return $this->label;
   }
 
-  public function buildContent($view_mode = 'full', $langcode = NULL) {
-    $content = array();
-
-    // Assume newly create objects are still empty.
-    if (!empty($this->is_new)) {
-      $content['empty']['#markup'] = '<em class="profile2-no-data">' . t('There is no profile data yet.') . '</em>';
-    }
-
-    if (!isset($langcode)) {
-      $langcode = language(LANGUAGE_TYPE_CONTENT)->langcode;
-    }
-
-    // Allow modules to change the view mode.
-    $context = array('langcode' => $langcode);
-    drupal_alter('entity_view_mode', $view_mode, $this, $context);
-
-    // Build fields content.
-    // In case of a multiple view, node_view_multiple() already ran the
-    // 'prepare_view' step. An internal flag prevents the operation from running
-    // twice.
-    field_attach_prepare_view('profile2', array($this->id() => $this), $view_mode, $langcode);
-    $content += field_attach_view('profile2', $this, $view_mode, $langcode);
-
-    return $content;
-  }
-
   public function save() {
     // Care about setting created and changed values. But do not automatically
     // set a created values for already existing profiles.

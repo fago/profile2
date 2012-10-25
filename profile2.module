@@ -23,6 +23,7 @@ function profile2_entity_info() {
       'form controller class' => array(
         'default' => 'Drupal\profile2\ProfileFormController',
       ),
+      'render controller class' => 'Drupal\Core\Entity\EntityRenderController',
       'view modes' => array(
         'account' => array(
           'label' => t('User account'),
@@ -446,7 +447,8 @@ function profile2_user_view($account, $view_mode, $langcode) {
           '#title' => $profile->label,
           '#prefix' => '<a id="profile-' . $profile->type . '"></a>',
         );
-        $account->content['profile_' . $type]['view'] = $profile->buildContent('account');
+        entity_render_controller('profile2')->buildContent(array($profile), 'account');
+        $account->content['profile_' . $type]['view'] = $profile->content;
       }
     }
   }
@@ -701,15 +703,6 @@ function profile2_theme() {
       'template' => 'profile2',
     ),
   );
-}
-
-/**
- * View a profile.
- *
- * @see Profile::view()
- */
-function profile2_view($profile, $view_mode = 'full', $langcode = NULL, $page = NULL) {
-  return $profile->view($view_mode, $langcode, $page);
 }
 
 /**
