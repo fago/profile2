@@ -165,7 +165,6 @@ class Profile extends Entity {
     // 'prepare_view' step. An internal flag prevents the operation from running
     // twice.
     field_attach_prepare_view('profile2', array($this->id() => $this), $view_mode, $langcode);
-    entity_prepare_view('profile2', array($this->id() => $this), $langcode);
     $content += field_attach_view('profile2', $this, $view_mode, $langcode);
 
     return $content;

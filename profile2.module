@@ -20,6 +20,9 @@ function profile2_entity_info() {
       'base table' => 'profile',
       'uri callback' => 'profile2_profile_uri',
       'fieldable' => TRUE,
+      'form controller class' => array(
+        'default' => 'Drupal\profile2\ProfileFormController',
+      ),
       'view modes' => array(
         'account' => array(
           'label' => t('User account'),
@@ -64,7 +67,10 @@ function profile2_entity_info() {
   $return['profile2_type'] = array(
     'label' => t('Profile type'),
     'entity class' => 'Drupal\profile2\ProfileType',
-    'controller class' => 'Drupal\config\ConfigStorageController',
+    'controller class' => 'Drupal\Core\Config\Entity\ConfigStorageController',
+    'form controller class' => array(
+      'default' => 'Drupal\profile2\ProfileTypeFormController',
+    ),
     'config prefix' => 'profile2.type',
     'entity keys' => array(
       'id' => 'id',
@@ -106,16 +112,15 @@ function profile2_menu() {
   );
   $items['admin/structure/profiles/add'] = array(
     'title' => 'Add profile type',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('profile2_type_form'),
+    'page callback' => 'profile2_type_add',
     'access arguments' => array('administer profile types'),
     'type' => MENU_LOCAL_ACTION,
     'file' => 'profile2.admin.inc',
   );
   $items['admin/structure/profiles/manage/%profile2_type'] = array(
     'title' => 'Edit profile type',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('profile2_type_form', 4),
+    'page callback' => 'profile2_type_edit',
+    'page arguments' => array(4),
     'access arguments' => array('administer profile types'),
     'file' => 'profile2.admin.inc',
   );
@@ -133,13 +138,22 @@ function profile2_menu() {
     'context' => MENU_CONTEXT_INLINE,
     'file' => 'profile2.admin.inc',
   );
-  $items['user/%user/edit/%profile2_type'] = array(
-    'title' => 'test',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('profile2_user_form', 1, 3),
-    'access callback' => 'profile2_profile_edit_access',
-    'access arguments' => array(3, 1),
+
+  $items['user/%user/edit/account'] = array(
+    'title' => 'Account',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
   );
+  foreach (profile2_get_types() as $id => $profile_type) {
+    $items["user/%user/edit/$id"] = array(
+      'title' => $profile_type->label(),
+      'page callback' => 'profile2_profile_edit',
+      'page arguments' => array(1, $id),
+      'access callback' => 'profile2_profile_edit_access',
+      'access arguments' => array(1, $id),
+      'type' => MENU_LOCAL_TASK,
+    );
+  }
 
   return $items;
 }
@@ -448,6 +462,7 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
         $form_state['profiles'][$type_name] = profile2_create(array('type' => $type_name));
       }
       profile2_attach_form($form, $form_state);
+
       // Wrap each profile form in a fieldset.
       $form['profile_' . $type_name] += array(
         '#type' => 'fieldset',
@@ -460,25 +475,25 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
 }
 
 /**
- * Page callback; Generates the profile editing form.
+ * Page callback; Present the form to edit a profile of a user.
+ *
+ * @param Drupal\user\User $account
+ *   The user account for which to edit the profile.
+ * @param string $profile_type_id
+ *   The profile type ID to use.
+ *
+ * @return array
+ *   A form array as expected by drupal_render().
  *
  * @see profile2_user_form_validate()
  * @see profile2_user_form_submit()
  */
-function profile2_user_form($form, &$form_state, User $user, ProfileType $profile_type) {
-  $profile = profile2_load_by_user($user, $profile_type->id());
+function profile2_profile_edit(User $account, $profile_type_id) {
+  $profile = profile2_load_by_user($account, $profile_type_id);
   if (empty($profile)) {
-    $profile = profile2_create(array('type' => $profile_type->id(), 'uid' => $user->uid));
+    $profile = profile2_create(array('type' => $profile_type_id, 'uid' => $account->uid));
   }
-  $form_state['profiles'][$profile->type] = $profile;
-  profile2_attach_form($form, $form_state);
-
-  $form['actions'] = array('#type' => 'actions');
-  $form['actions']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-  );
-  return $form;
+  return entity_get_form($profile);
 }
 
 /**
@@ -649,12 +664,22 @@ function profile2_profile2_access($op, Profile $profile = NULL, User $account = 
 /**
  * Access callback; Selects the right profile by type an account.
  *
+ * @param Drupal\user\User $account
+ *   The user account for which to check profile edit access.
+ * @param string $profile_type_id
+ *   The profile type ID to check for access.
+ *
+ * @return bool
+ *
  * @see profile2_access()
  */
-function profile2_profile_edit_access(ProfileType $type, User $account) {
-  $profile = profile2_load_by_user($account, $type->id());
+function profile2_profile_edit_access(User $account, $profile_type_id) {
+  if (!profile2_type_load($profile_type_id)) {
+    return FALSE;
+  }
+  $profile = profile2_load_by_user($account, $profile_type_id);
   if (empty($profile)) {
-    $profile = entity_create('profile2', array('uid' => $account->uid, 'type' => $type->id()));
+    $profile = entity_create('profile2', array('uid' => $account->uid, 'type' => $profile_type_id));
   }
   return profile2_access('edit', $profile);
 }

@@ -7,7 +7,7 @@
 
 namespace Drupal\profile2;
 
-use Drupal\config\ConfigEntityBase;
+use Drupal\Core\Config\Entity\ConfigEntityBase;
 
 /**
  * Use a separate class for profile types so we can specify some defaults

@@ -134,13 +134,13 @@ class Profile2CRUDTestCase extends WebTestBase {
     $this->drupalLogin($user2);
 
     // Create profiles for the user2.
-    $edit['profile_main[profile_fullname][und][0][value]'] = $this->randomName();
+    $edit['profile_fullname[und][0][value]'] = $this->randomName();
     $this->drupalPost('user/' . $user2->uid . '/edit/main', $edit, t('Save'));
-    $this->assertText(t('The changes have been saved.'), 'Profile saved.');
-    $this->assertEqual(profile2_load_by_user($user2, 'main')->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_main[profile_fullname][und][0][value]'], 'Profile edited.');
+    $this->assertText(t('Your profile has been saved.'), 'Profile saved.');
+    $this->assertEqual(profile2_load_by_user($user2, 'main')->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_fullname[und][0][value]'], 'Profile edited.');
 
     $this->drupalGet('user/' . $user2->uid);
-    $this->assertText(check_plain($edit['profile_main[profile_fullname][und][0][value]']), 'Profile displayed.');
+    $this->assertText(check_plain($edit['profile_fullname[und][0][value]']), 'Profile displayed.');
   }
 
 }
