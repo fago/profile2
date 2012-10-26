@@ -242,33 +242,33 @@ function profile2_type_list_page() {
   $field_ui = module_exists('field_ui');
   $header = array(t('Name'), array('data' => t('Operations'), 'colspan' => $field_ui ? 4 : 2));
   $rows = array();
-  foreach (entity_load_multiple('profile2_type') as $profile_type) {
+  foreach (entity_load_multiple('profile2_type') as $type) {
     $row = array();
     $row['label'] = t('@label <small>(Machine name: @type)</small>', array(
-      '@label' => $profile_type->label(),
-      '@type' => $profile_type->id(),
+      '@label' => $type->label(),
+      '@type' => $type->id(),
     ));
     $row['edit']['data'] = array(
       '#type' => 'link',
       '#title' => t('edit'),
-      '#href' => 'admin/structure/profiles/manage/' . $profile_type->id(),
+      '#href' => 'admin/structure/profiles/manage/' . $type->id(),
     );
     if ($field_ui) {
       $row['field-manage']['data'] = array(
         '#type' => 'link',
         '#title' => t('manage fields'),
-        '#href' => 'admin/structure/profiles/manage/' . $profile_type->id() . '/fields',
+        '#href' => 'admin/structure/profiles/manage/' . $type->id() . '/fields',
       );
       $row['field-display']['data'] = array(
         '#type' => 'link',
         '#title' => t('manage display'),
-        '#href' => 'admin/structure/profiles/manage/' . $profile_type->id() . '/display',
+        '#href' => 'admin/structure/profiles/manage/' . $type->id() . '/display',
       );
     }
     $row['delete']['data'] = array(
       '#type' => 'link',
       '#title' => t('delete'),
-      '#href' => 'admin/structure/profiles/manage/' . $profile_type->id() . '/delete',
+      '#href' => 'admin/structure/profiles/manage/' . $type->id() . '/delete',
     );
     $rows[] = $row;
   }
@@ -285,10 +285,10 @@ function profile2_type_list_page() {
 /**
  * Menu argument loader; Load a profile type by string.
  *
- * @param $id
+ * @param string $id
  *   The machine-readable name of a profile type to load.
  *
- * @return
+ * @return Drupal\profile2\ProfileType|false
  *   A profile type array or FALSE if $type does not exist.
  */
 function profile2_type_load($id) {
@@ -416,16 +416,16 @@ function profile2_profile2_type_delete(ProfileType $type) {
  * Implements hook_user_view().
  */
 function profile2_user_view($account, $view_mode, $langcode) {
-  foreach (profile2_get_types() as $type => $profile_type) {
-    if ($profile_type->userView && $profile = profile2_load_by_user($account, $type)) {
+  foreach (profile2_get_types() as $id => $type) {
+    if ($type->userView && $profile = profile2_load_by_user($account, $id)) {
       if (profile2_access('view', $profile)) {
-        $account->content['profile_' . $type] = array(
+        $account->content['profile_' . $id] = array(
           '#type' => 'user_profile_category',
           '#title' => $profile->label,
           '#prefix' => '<a id="profile-' . $profile->type . '"></a>',
         );
         entity_render_controller('profile2')->buildContent(array($profile), 'account');
-        $account->content['profile_' . $type]['view'] = $profile->content;
+        $account->content['profile_' . $id]['view'] = $profile->content;
       }
     }
   }
@@ -435,17 +435,17 @@ function profile2_user_view($account, $view_mode, $langcode) {
  * Implements hook_form_FORM_ID_alter() for the registration form.
  */
 function profile2_form_user_register_form_alter(&$form, &$form_state) {
-  foreach (profile2_get_types() as $type_name => $profile_type) {
-    if ($profile_type->get('registration')) {
-      if (empty($form_state['profiles'][$type_name])) {
-        $form_state['profiles'][$type_name] = entity_create('profile2', array('type' => $type_name));
+  foreach (profile2_get_types() as $id => $type) {
+    if ($type->get('registration')) {
+      if (empty($form_state['profiles'][$id])) {
+        $form_state['profiles'][$id] = entity_create('profile2', array('type' => $id));
       }
       profile2_attach_form($form, $form_state);
 
       // Wrap each profile form in a fieldset.
-      $form['profile_' . $type_name] += array(
+      $form['profile_' . $id] += array(
         '#type' => 'fieldset',
-        '#title' => check_plain($profile_type->label()),
+        '#title' => check_plain($type->label()),
       );
     }
   }
@@ -500,14 +500,14 @@ function profile2_profile_edit(Profile $profile) {
  * @see profile2_user_form_submit()
  */
 function profile2_attach_form(&$form, &$form_state) {
-  foreach ($form_state['profiles'] as $type => $profile) {
-    $form['profile_' . $profile->bundle()]['#tree'] = TRUE;
-    $form['profile_' . $profile->bundle()]['#parents'] = array('profile_' . $profile->get('type'));
+  foreach ($form_state['profiles'] as $bundle => $profile) {
+    $form['profile_' . $bundle]['#tree'] = TRUE;
+    $form['profile_' . $bundle]['#parents'] = array('profile_' . $bundle);
 
-    field_attach_form('profile2', $profile, $form['profile_' . $profile->bundle()], $form_state);
+    field_attach_form('profile2', $profile, $form['profile_' . $bundle], $form_state);
 
-    if (count(field_info_instances('profile2', $profile->bundle())) == 0) {
-      $form['profile_' . $profile->bundle()]['message'] = array(
+    if (count(field_info_instances('profile2', $bundle)) == 0) {
+      $form['profile_' . $bundle]['message'] = array(
         '#access' => user_access('administer profile types'),
         '#markup' => t('No fields have been associated with this profile type. Go to the <a href="!url">Profile types</a> page to add some fields.', array('!url' => url('admin/structure/profiles'))),
       );
@@ -517,7 +517,8 @@ function profile2_attach_form(&$form, &$form_state) {
     // skip that in case the caller cares about invoking the hooks.
     // @see profile2_form().
     if (!isset($form_state['profile2_skip_hook'])) {
-      $hooks[] = 'form_profile2_edit_' . $type . '_form';
+      $hooks = array();
+      $hooks[] = 'form_profile2_edit_' . $bundle . '_form';
       $hooks[] = 'form_profile2_form';
       drupal_alter($hooks, $form, $form_state);
     }
@@ -530,11 +531,11 @@ function profile2_attach_form(&$form, &$form_state) {
  * @see profile2_attach_form()
  */
 function profile2_user_form_validate(&$form, &$form_state) {
-  foreach ($form_state['profiles'] as $type => $profile) {
-    if (isset($form_state['values']['profile_' . $profile->bundle()])) {
+  foreach ($form_state['profiles'] as $bundle => $profile) {
+    if (isset($form_state['values']['profile_' . $bundle])) {
       // @see entity_form_field_validate()
-      $pseudo_entity = entity_create('profile2', array_merge($form_state['values']['profile_' . $profile->bundle()], array('type' => $type)));
-      field_attach_form_validate('profile2', $pseudo_entity, $form['profile_' . $profile->bundle()], $form_state);
+      $pseudo_entity = entity_create('profile2', array_merge($form_state['values']['profile_' . $bundle], array('type' => $bundle)));
+      field_attach_form_validate('profile2', $pseudo_entity, $form['profile_' . $bundle], $form_state);
     }
   }
 }
@@ -550,7 +551,7 @@ function profile2_user_form_submit(&$form, &$form_state) {
   // clean form values.
   profile2_form_submit_cleanup($form, $form_state);
 
-  foreach ($form_state['profiles'] as $type => $profile) {
+  foreach ($form_state['profiles'] as $bundle => $profile) {
     // During registration set the uid field of the newly created user.
     if (empty($profile->uid) && isset($form_state['user']->uid)) {
       $profile->uid = $form_state['user']->uid;
@@ -570,14 +571,14 @@ function profile2_user_form_submit(&$form, &$form_state) {
  * @see profile2_attach_form()
  */
 function profile2_form_submit_build_profile(&$form, &$form_state) {
-  foreach ($form_state['profiles'] as $type => $profile) {
+  foreach ($form_state['profiles'] as $bundle => $profile) {
     // @see entity_form_submit_build_entity()
-    if (isset($form['profile_' . $type]['#entity_builders'])) {
-      foreach ($form['profile_' . $type]['#entity_builders'] as $function) {
-        $function('profile2', $profile, $form['profile_' . $type], $form_state);
+    if (isset($form['profile_' . $bundle]['#entity_builders'])) {
+      foreach ($form['profile_' . $bundle]['#entity_builders'] as $function) {
+        $function('profile2', $profile, $form['profile_' . $bundle], $form_state);
       }
     }
-    field_attach_submit('profile2', $profile, $form['profile_' . $type], $form_state);
+    field_attach_submit('profile2', $profile, $form['profile_' . $bundle], $form_state);
   }
 }
 
@@ -587,8 +588,8 @@ function profile2_form_submit_build_profile(&$form, &$form_state) {
  * @see profile2_attach_form()
  */
 function profile2_form_submit_cleanup(&$form, &$form_state) {
-  foreach ($form_state['profiles'] as $type => $profile) {
-    unset($form_state['values']['profile_' . $type]);
+  foreach ($form_state['profiles'] as $bundle => $profile) {
+    unset($form_state['values']['profile_' . $bundle]);
   }
 }
 
