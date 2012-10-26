@@ -400,16 +400,6 @@ function profile2_delete(Profile $profile) {
 }
 
 /**
- * Delete multiple profiles.
- *
- * @param $pids
- *   An array of profile IDs.
- */
-function profile2_delete_multiple(array $pids) {
-  entity_get_controller('profile2')->delete($pids);
-}
-
-/**
  * Implements hook_user_delete().
  */
 function profile2_user_delete($account) {
@@ -456,7 +446,7 @@ function profile2_profile2_type_delete(ProfileType $type) {
   // Delete all profiles of this type.
   $pids = array_keys(entity_load_multiple_by_properties('profile2', array('type' => $type->id())));
   if ($pids) {
-    profile2_delete_multiple($pids);
+    entity_delete_multiple('profile2', $pids);
   }
 }
 

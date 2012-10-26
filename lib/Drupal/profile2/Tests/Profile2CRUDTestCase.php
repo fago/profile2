@@ -93,7 +93,7 @@ class Profile2CRUDTestCase extends WebTestBase {
     // Try deleting multiple profiles by deleting all existing profiles.
     $pids = array_keys(entity_load_multiple('profile2'));
     $this->assertTrue($pids);
-    profile2_delete_multiple($pids);
+    entity_delete_multiple('profile2', $pids);
   }
 
   /**
