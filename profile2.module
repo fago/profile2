@@ -77,7 +77,6 @@ function profile2_entity_info() {
       'id' => 'id',
       'label' => 'label',
     ),
-    'access callback' => 'profile2_type_access',
   );
 
   return $return;
@@ -647,13 +646,6 @@ function profile2_profile2_access($op, Profile $profile = NULL, User $account = 
     }
   }
   // Do not explicitly deny access so others may still grant access.
-}
-
-/**
- * Access callback for the entity API.
- */
-function profile2_type_access($op, ProfileType $type = NULL, User $account = NULL) {
-  return user_access('administer profile types', $account);
 }
 
 /**
