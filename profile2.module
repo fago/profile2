@@ -402,13 +402,6 @@ function profile2_user_delete($account) {
 }
 
 /**
- * Deletes a profile type from.
- */
-function profile2_type_delete(ProfileType $type) {
-  $type->delete();
-}
-
-/**
 * Implements hook_profile2_type_delete()
 */
 function profile2_profile2_type_delete(ProfileType $type) {
