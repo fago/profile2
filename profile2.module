@@ -68,7 +68,9 @@ function profile2_entity_info() {
   $return['profile2_type'] = array(
     'label' => t('Profile type'),
     'entity class' => 'Drupal\profile2\ProfileType',
+    'uri callback' => 'profile2_profile_type_uri',
     'controller class' => 'Drupal\Core\Config\Entity\ConfigStorageController',
+    'list controller class' => 'Drupal\profile2\ProfileTypeListController',
     'form controller class' => array(
       'default' => 'Drupal\profile2\ProfileTypeFormController',
     ),
@@ -83,7 +85,7 @@ function profile2_entity_info() {
 }
 
 /**
- * Entity uri callback.
+ * Entity URI callback for profiles.
  *
  * @param Drupal\profile2\Profile $profile
  *   A Profile entity.
@@ -92,6 +94,18 @@ function profile2_profile_uri(Profile $profile) {
   // @todo Call into user_uri() to ensure consistent URIs?
   return array(
     'path' => 'user/' . $profile->uid,
+  );
+}
+
+/**
+ * Entity URI callback for profile types.
+ *
+ * @param Drupal\profile2\ProfileType $profile_type
+ *   A profile type entity.
+ */
+function profile2_profile_type_uri(ProfileType $profile_type) {
+  return array(
+    'path' => 'admin/structure/profiles/manage/' . $profile_type->id(),
   );
 }
 
@@ -238,47 +252,8 @@ function profile2_menu_local_tasks_alter(&$data, $router_item, $root_path) {
  * Page callback; Lists available ProfileType objects.
  */
 function profile2_type_list_page() {
-  $field_ui = module_exists('field_ui');
-  $header = array(t('Name'), array('data' => t('Operations'), 'colspan' => $field_ui ? 4 : 2));
-  $rows = array();
-  foreach (entity_load_multiple('profile2_type') as $type) {
-    $row = array();
-    $row['label'] = t('@label <small>(Machine name: @type)</small>', array(
-      '@label' => $type->label(),
-      '@type' => $type->id(),
-    ));
-    $row['edit']['data'] = array(
-      '#type' => 'link',
-      '#title' => t('edit'),
-      '#href' => 'admin/structure/profiles/manage/' . $type->id(),
-    );
-    if ($field_ui) {
-      $row['field-manage']['data'] = array(
-        '#type' => 'link',
-        '#title' => t('manage fields'),
-        '#href' => 'admin/structure/profiles/manage/' . $type->id() . '/fields',
-      );
-      $row['field-display']['data'] = array(
-        '#type' => 'link',
-        '#title' => t('manage display'),
-        '#href' => 'admin/structure/profiles/manage/' . $type->id() . '/display',
-      );
-    }
-    $row['delete']['data'] = array(
-      '#type' => 'link',
-      '#title' => t('delete'),
-      '#href' => 'admin/structure/profiles/manage/' . $type->id() . '/delete',
-    );
-    $rows[] = $row;
-  }
-
-  $build = array(
-    '#theme' => 'table',
-    '#header' => $header,
-    '#rows' => $rows,
-    '#empty' => t('No profile types available. <a href="@link">Add profile type</a>.', array('@link' => url('admin/structure/profiles/add'))),
-  );
-  return $build;
+  $controller = entity_list_controller('profile2_type');
+  return $controller->render();
 }
 
 /**
