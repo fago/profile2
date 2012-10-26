@@ -376,21 +376,6 @@ function profile2_load_multiple($pids = array(), $reset = FALSE) {
 }
 
 /**
- * Load multiple profiles based on certain conditions.
- *
- * @param $properties
- *   An array of properties to match against the {profile} table.
- *
- * @return
- *   An array of profile objects
- *
- * @see entity_load_multiple_by_properties()
- */
-function profile2_load_multiple_by_properties($properties = array()) {
-  return entity_load_multiple_by_properties('profile2', $properties);
-}
-
-/**
  * Fetch profiles by account.
  *
  * @param $account
@@ -413,7 +398,7 @@ function profile2_load_by_user($account, $type_name = NULL) {
 
   if (!isset($cache[$uid])) {
     if (empty($type_name)) {
-      $profiles = profile2_load_multiple_by_properties(array('uid' => $uid));
+      $profiles = entity_load_multiple_by_properties('profile2', array('uid' => $uid));
       // Cache ids for further lookups.
       $cache[$uid] = array();
       foreach ($profiles as $pid => $profile) {
@@ -505,7 +490,7 @@ function profile2_type_delete(ProfileType $type) {
 */
 function profile2_profile2_type_delete(ProfileType $type) {
   // Delete all profiles of this type.
-  $pids = array_keys(profile2_load_multiple_by_properties(array('type' => $type->id())));
+  $pids = array_keys(entity_load_multiple_by_properties('profile2', array('type' => $type->id())));
   if ($pids) {
     profile2_delete_multiple($pids);
   }
