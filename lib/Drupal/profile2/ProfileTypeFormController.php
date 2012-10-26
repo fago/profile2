@@ -51,10 +51,10 @@ class ProfileTypeFormController extends EntityFormController {
     $status = $type->save();
 
     if ($status == SAVED_UPDATED) {
-      drupal_set_message(t('%label configuration has been updated.', array('%label' => $type->label())));
+      drupal_set_message(t('%label profile type has been updated.', array('%label' => $type->label())));
     }
     else {
-      drupal_set_message(t('%label configuration has been inserted.', array('%label' => $type->label())));
+      drupal_set_message(t('%label profile type has been created.', array('%label' => $type->label())));
     }
     $form_state['redirect'] = 'admin/structure/profiles';
   }

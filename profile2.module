@@ -69,7 +69,7 @@ function profile2_entity_info() {
     'label' => t('Profile type'),
     'entity class' => 'Drupal\profile2\ProfileType',
     'uri callback' => 'profile2_profile_type_uri',
-    'controller class' => 'Drupal\Core\Config\Entity\ConfigStorageController',
+    'controller class' => 'Drupal\profile2\ProfileTypeStorageController',
     'list controller class' => 'Drupal\profile2\ProfileTypeListController',
     'form controller class' => array(
       'default' => 'Drupal\profile2\ProfileTypeFormController',

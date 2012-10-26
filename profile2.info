@@ -2,4 +2,5 @@ name = Profile2
 description = Provides configurable user profiles.
 core = 8.x
 dependencies[] = user
+dependencies[] = field
 configure = admin/structure/profiles

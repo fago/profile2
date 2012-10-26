@@ -28,7 +28,7 @@ function profile2_type_add() {
  *   A form array as expected by drupal_render().
  */
 function profile2_type_edit(ProfileType $type) {
-  drupal_set_title(t('Edit %name profile type', array('%name' => $type->label)));
+  drupal_set_title(t('Edit %label profile type', array('%label' => $type->label)), PASS_THROUGH);
   return entity_get_form($type);
 }
 
