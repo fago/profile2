@@ -393,18 +393,11 @@ function profile2_profile2_delete($profile) {
 }
 
 /**
- * Deletes a profile.
- */
-function profile2_delete(Profile $profile) {
-  $profile->delete();
-}
-
-/**
  * Implements hook_user_delete().
  */
 function profile2_user_delete($account) {
   foreach (profile2_load_by_user($account) as $profile) {
-    profile2_delete($profile);
+    $profile->delete();
   }
 }
 

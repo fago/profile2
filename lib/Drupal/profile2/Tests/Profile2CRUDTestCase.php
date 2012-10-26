@@ -80,7 +80,7 @@ class Profile2CRUDTestCase extends WebTestBase {
     $loaded = entity_load('profile2', $profile->pid);
     $this->assertEqual($loaded->pid, $profile->pid, 'Loaded profile unrelated to a user.');
 
-    profile2_delete($profiles['test']);
+    $profiles['test']->delete();
     $profiles2 = profile2_load_by_user($user1);
     $this->assertEqual(array_keys($profiles2), array('test2'), 'Profile successfully deleted.');
 
