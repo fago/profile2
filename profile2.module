@@ -402,16 +402,6 @@ function profile2_user_delete($account) {
 }
 
 /**
- * Saves a profile to the database.
- *
- * @param $profile
- *   The profile object.
- */
-function profile2_save(Profile $profile) {
-  return $profile->save();
-}
-
-/**
  * Saves a profile type to the db.
  */
 function profile2_type_save(ProfileType $type) {
@@ -579,7 +569,7 @@ function profile2_user_form_submit(&$form, &$form_state) {
     if (empty($profile->uid) && isset($form_state['user']->uid)) {
       $profile->uid = $form_state['user']->uid;
     }
-    profile2_save($profile);
+    $profile->save();
   }
 
   // Show message only in profile edit form.

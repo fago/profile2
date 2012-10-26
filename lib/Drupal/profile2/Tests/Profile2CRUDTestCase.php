@@ -64,10 +64,10 @@ class Profile2CRUDTestCase extends WebTestBase {
   function testCRUD() {
     $user1 = $this->drupalCreateUser();
     // Create profiles for the user1 and unrelated to a user.
-    profile2_save(entity_create('profile2', array('type' => 'test', 'uid' => $user1->uid)));
-    profile2_save(entity_create('profile2', array('type' => 'test2', 'uid' => $user1->uid)));
+    entity_create('profile2', array('type' => 'test', 'uid' => $user1->uid))->save();
+    entity_create('profile2', array('type' => 'test2', 'uid' => $user1->uid))->save();
     $profile = entity_create('profile2', array('type' => 'test', 'uid' => NULL));
-    profile2_save($profile);
+    $profile->save();
 
     $profiles = profile2_load_by_user($user1);
     $this->assertEqual($profiles['test']->label(), 'label', 'Created and loaded profile 1.');
@@ -84,7 +84,7 @@ class Profile2CRUDTestCase extends WebTestBase {
     $profiles2 = profile2_load_by_user($user1);
     $this->assertEqual(array_keys($profiles2), array('test2'), 'Profile successfully deleted.');
 
-    profile2_save($profiles2['test2']);
+    $profiles2['test2']->save();
     $this->assertEqual($profiles['test2']->pid, $profiles2['test2']->pid, 'Profile successfully updated.');
 
     // Delete a profile type.
