@@ -341,23 +341,6 @@ function profile2_get_types() {
 }
 
 /**
- * Load multiple profiles based on profile IDs.
- *
- * @param $pids
- *   An array of profile IDs.
- * @param $reset
- *   A boolean indicating that the internal cache should be reset.
- *
- * @return
- *   An array of profile objects, indexed by pid.
- *
- * @see entity_load_multiple()
- */
-function profile2_load_multiple($pids = array(), $reset = FALSE) {
-  return entity_load_multiple('profile2', $pids, $reset);
-}
-
-/**
  * Fetch profiles by account.
  *
  * @param $account
@@ -367,7 +350,6 @@ function profile2_load_multiple($pids = array(), $reset = FALSE) {
  * @return
  *   Either a single profile or an array of profiles keyed by profile type.
  *
- * @see profile2_load_multiple()
  * @see profile2_profile2_delete()
  * @see Profile::save()
  */
@@ -398,7 +380,7 @@ function profile2_load_by_user($account, $type_name = NULL) {
     return isset($cache[$uid][$type_name]) ? entity_load('profile2', $cache[$uid][$type_name]) : FALSE;
   }
   // Return an array containing profiles keyed by profile type.
-  return $cache[$uid] ? array_combine(array_keys($cache[$uid]), profile2_load_multiple($cache[$uid])) : $cache[$uid];
+  return $cache[$uid] ? array_combine(array_keys($cache[$uid]), entity_load_multiple('profile2', $cache[$uid])) : $cache[$uid];
 }
 
 /**

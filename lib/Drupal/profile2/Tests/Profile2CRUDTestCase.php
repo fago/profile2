@@ -34,7 +34,7 @@ class Profile2CRUDTestCase extends WebTestBase {
       'label' => 'label2',
       'weight' => 2
     ), 'profile2_type'));
-    profile2_load_multiple(array(), TRUE);
+    entity_load_multiple('profile2', array(), TRUE);
 
     // Add a field to main type, which is created during module installation.
     $field = array(
@@ -91,7 +91,8 @@ class Profile2CRUDTestCase extends WebTestBase {
     profile2_type_load('test')->delete();
 
     // Try deleting multiple profiles by deleting all existing profiles.
-    $pids = array_keys(profile2_load_multiple());
+    $pids = array_keys(entity_load_multiple('profile2'));
+    $this->assertTrue($pids);
     profile2_delete_multiple($pids);
   }
 
