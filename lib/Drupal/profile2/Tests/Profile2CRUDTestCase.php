@@ -77,7 +77,7 @@ class Profile2CRUDTestCase extends WebTestBase {
     $profiles = profile2_load_by_user($user1);
     $this->assertEqual($profiles['test']->label, 'label', 'Looked up profiles again.');
 
-    $loaded = profile2_load($profile->pid);
+    $loaded = entity_load('profile2', $profile->pid);
     $this->assertEqual($loaded->pid, $profile->pid, 'Loaded profile unrelated to a user.');
 
     profile2_delete($profiles['test']);
