@@ -4,7 +4,6 @@ namespace Drupal\profile2\Tests;
 
 use Drupal\simpletest\WebTestBase;
 use Drupal\profile2\Profile;
-use Drupal\profile2\ProfileType;
 
 /**
  * Test basic CRUD functionality.
@@ -24,16 +23,18 @@ class Profile2CRUDTestCase extends WebTestBase {
   function setUp() {
     parent::setUp();
 
-    profile2_type_save(new ProfileType(array(
+    $type = entity_create('profile2_type', array(
       'id' => 'test',
       'label' => 'label',
       'weight' => 0
-    ), 'profile2_type'));
-    profile2_type_save(new ProfileType(array(
+    ));
+    $type->save();
+    $type = entity_create('profile2_type', array(
       'id' => 'test2',
       'label' => 'label2',
       'weight' => 2
-    ), 'profile2_type'));
+    ));
+    $type->save();
     entity_load_multiple('profile2', array(), TRUE);
 
     // Add a field to main type, which is created during module installation.

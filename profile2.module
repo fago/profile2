@@ -402,13 +402,6 @@ function profile2_user_delete($account) {
 }
 
 /**
- * Saves a profile type to the db.
- */
-function profile2_type_save(ProfileType $type) {
-  $type->save();
-}
-
-/**
  * Deletes a profile type from.
  */
 function profile2_type_delete(ProfileType $type) {
