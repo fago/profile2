@@ -409,13 +409,6 @@ function profile2_user_delete($account) {
 }
 
 /**
- * Create a new profile object.
- */
-function profile2_create(array $values) {
-  return entity_create('profile2', $values);
-}
-
-/**
  * Saves a profile to the database.
  *
  * @param $profile
@@ -476,7 +469,7 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
   foreach (profile2_get_types() as $type_name => $profile_type) {
     if ($profile_type->get('registration')) {
       if (empty($form_state['profiles'][$type_name])) {
-        $form_state['profiles'][$type_name] = profile2_create(array('type' => $type_name));
+        $form_state['profiles'][$type_name] = entity_create('profile2', array('type' => $type_name));
       }
       profile2_attach_form($form, $form_state);
 

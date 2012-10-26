@@ -64,9 +64,9 @@ class Profile2CRUDTestCase extends WebTestBase {
   function testCRUD() {
     $user1 = $this->drupalCreateUser();
     // Create profiles for the user1 and unrelated to a user.
-    profile2_save(profile2_create(array('type' => 'test', 'uid' => $user1->uid)));
-    profile2_save(profile2_create(array('type' => 'test2', 'uid' => $user1->uid)));
-    $profile = profile2_create(array('type' => 'test', 'uid' => NULL));
+    profile2_save(entity_create('profile2', array('type' => 'test', 'uid' => $user1->uid)));
+    profile2_save(entity_create('profile2', array('type' => 'test2', 'uid' => $user1->uid)));
+    $profile = entity_create('profile2', array('type' => 'test', 'uid' => NULL));
     profile2_save($profile);
 
     $profiles = profile2_load_by_user($user1);
@@ -127,7 +127,7 @@ class Profile2CRUDTestCase extends WebTestBase {
 
     // Test creating a profile manually (e.g. by an admin) and ensure the user
     // may not see it.
-    profile2_create(array('type' => 'main', 'uid' => $user1->uid))->save();
+    entity_create('profile2', array('type' => 'main', 'uid' => $user1->uid))->save();
     $this->drupalGet('user/' . $user1->uid);
     $this->assertNoText(t('Main profile'), 'Profile data is not visible to the owner.');
 
