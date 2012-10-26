@@ -56,8 +56,4 @@ function profile2_type_delete_form($form, &$form_state, ProfileType $profile_typ
 function profile2_type_delete_form_submit($form, &$form_state) {
   $form_state['profile2_type']->delete();
   $form_state['redirect'] = 'admin/structure/profiles';
-
-  // Rebuild the menu tree.
-  // @todo Make a router rebuild unnecessary.
-  menu_router_rebuild();
 }

@@ -57,10 +57,6 @@ class ProfileTypeFormController extends EntityFormController {
       drupal_set_message(t('%label configuration has been inserted.', array('%label' => $profile_type->label())));
     }
     $form_state['redirect'] = 'admin/structure/profiles';
-
-    // Rebuild the menu tree.
-    // @todo Make a router rebuild unnecessary.
-    menu_router_rebuild();
   }
 
   /**
