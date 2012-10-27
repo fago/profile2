@@ -1,21 +1,25 @@
 <?php
 
+/**
+ * @file
+ * Contains Drupal\profile2\Tests\ProfileEditTest.
+ */
+
 namespace Drupal\profile2\Tests;
 
 use Drupal\simpletest\WebTestBase;
-use Drupal\profile2\Profile;
 
 /**
- * Test basic CRUD functionality.
+ * Tests creating and editing of profiles.
  */
-class Profile2CRUDTestCase extends WebTestBase {
+class ProfileEditTest extends WebTestBase {
 
-  public static $modules = array('profile2', 'config');
+  public static $modules = array('profile2', 'text');
 
   public static function getInfo() {
     return array(
-      'name' => 'Editing profiles',
-      'description' => 'Tests basic CRUD and editing of Profile2 profiles.',
+      'name' => 'Profile editing',
+      'description' => 'Tests creating and editing of profiles.',
       'group' => 'Profile2',
     );
   }
