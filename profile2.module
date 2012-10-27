@@ -20,6 +20,7 @@ function profile2_entity_info() {
       'base table' => 'profile',
       'uri callback' => 'profile2_profile_uri',
       'fieldable' => TRUE,
+      'controller class' => 'Drupal\profile2\ProfileStorageController',
       'form controller class' => array(
         'default' => 'Drupal\profile2\ProfileFormController',
       ),
@@ -39,7 +40,6 @@ function profile2_entity_info() {
       'bundle keys' => array(
         'bundle' => 'id',
       ),
-      'access callback' => 'profile2_access',
     ),
   );
 
@@ -57,12 +57,6 @@ function profile2_entity_info() {
         'access arguments' => array('administer profiles'),
       ),
     );
-  }
-
-  // Support entity cache module.
-  if (module_exists('entitycache')) {
-    $return['profile2']['field cache'] = FALSE;
-    $return['profile2']['entity cache'] = TRUE;
   }
 
   $return['profile2_type'] = array(
@@ -358,31 +352,11 @@ function profile2_load_by_user($account, $type_name = NULL) {
 }
 
 /**
- * Implements hook_profile2_delete().
+ * Implements hook_user_predelete().
  */
-function profile2_profile2_delete($profile) {
-  // Clear the static cache from profile2_load_by_user().
-  $cache = &drupal_static('profile2_load_by_user', array());
-  unset($cache[$profile->uid][$profile->type]);
-}
-
-/**
- * Implements hook_user_delete().
- */
-function profile2_user_delete($account) {
+function profile2_user_predelete($account) {
   foreach (profile2_load_by_user($account) as $profile) {
     $profile->delete();
-  }
-}
-
-/**
-* Implements hook_profile2_type_delete()
-*/
-function profile2_profile2_type_delete(ProfileType $type) {
-  // Delete all profiles of this type.
-  $pids = array_keys(entity_load_multiple_by_properties('profile2', array('type' => $type->id())));
-  if ($pids) {
-    entity_delete_multiple('profile2', $pids);
   }
 }
 

@@ -31,16 +31,15 @@ class ProfileFormController extends EntityFormController {
    * Overrides Drupal\Core\Entity\EntityFormController::save().
    */
   public function save(array $form, array &$form_state) {
-    global $user;
-
     $profile = $this->getEntity($form_state);
     $profile->save();
 
-    if ($user->uid == $profile->uid) {
+    if ($GLOBALS['user']->uid == $profile->uid) {
       drupal_set_message(t('Your profile has been saved.'));
     }
     else {
       drupal_set_message(t("%name's profile has been updated.", array('%name' => user_format_name(user_load($profile->uid)))));
     }
   }
+
 }

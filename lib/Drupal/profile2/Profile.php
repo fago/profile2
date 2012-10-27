@@ -144,20 +144,5 @@ class Profile extends Entity {
     return $this->label;
   }
 
-  public function save() {
-    // Care about setting created and changed values. But do not automatically
-    // set a created values for already existing profiles.
-    if (empty($this->created) && (!empty($this->is_new) || !$this->pid)) {
-      $this->created = REQUEST_TIME;
-    }
-    $this->changed = REQUEST_TIME;
-
-    parent::save();
-    // Update the static cache from profile2_load_by_user().
-    $cache = &drupal_static('profile2_load_by_user', array());
-    if (isset($cache[$this->uid])) {
-      $cache[$this->uid][$this->type] = $this->pid;
-    }
-  }
 }
 

@@ -30,6 +30,19 @@ class ProfileTypeStorageController extends ConfigStorageController {
   }
 
   /**
+   * Overrides \Drupal\Core\Config\Entity\ConfigStorageController::preDelete().
+   */
+  protected function preDelete($entities) {
+    // Delete all profiles of this type.
+    foreach ($entities as $entity) {
+      $pids = array_keys(entity_load_multiple_by_properties('profile2', array('type' => $entity->id())));
+      if ($pids) {
+        entity_delete_multiple('profile2', $pids);
+      }
+    }
+  }
+
+  /**
    * Overrides \Drupal\Core\Config\Entity\ConfigStorageController::postDelete().
    */
   protected function postDelete($entities) {
