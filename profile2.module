@@ -213,7 +213,7 @@ function profile2_menu_local_tasks_alter(&$data, $router_item, $root_path) {
       }
     }
     // Expand the dynamic %profile_menu argument into a tab for each type.
-    $types = profile2_get_types();
+    $types = entity_load_multiple('profile2_type');
     foreach ($types as $type) {
       // If the current page is the active tab registered in hook_menu(), then
       // the menu router item with the dynamic argument will be exposed already.
@@ -277,7 +277,7 @@ function profile2_permission() {
     ),
   );
   // Generate per profile type permissions.
-  foreach (profile2_get_types() as $type) {
+  foreach (entity_load_multiple('profile2_type') as $type) {
     $type_name = $type->id();
     $permissions += array(
       "edit own $type_name profile" => array(
@@ -295,16 +295,6 @@ function profile2_permission() {
     );
   }
   return $permissions;
-}
-
-/**
- * Gets an array of all profile types, keyed by the machine name.
- *
- * @return array
- *   An array of profile type objects.
- */
-function profile2_get_types() {
-  return entity_load_multiple('profile2_type');
 }
 
 /**
@@ -353,7 +343,7 @@ function profile2_user_predelete($account) {
  * Implements hook_user_view().
  */
 function profile2_user_view($account, $view_mode, $langcode) {
-  foreach (profile2_get_types() as $id => $type) {
+  foreach (entity_load_multiple('profile2_type') as $id => $type) {
     if ($type->userView && $profile = profile2_load_by_user($account, $id)) {
       if (profile2_access('view', $profile)) {
         $account->content['profile_' . $id] = array(
@@ -372,7 +362,7 @@ function profile2_user_view($account, $view_mode, $langcode) {
  * Implements hook_form_FORM_ID_alter() for the registration form.
  */
 function profile2_form_user_register_form_alter(&$form, &$form_state) {
-  foreach (profile2_get_types() as $id => $type) {
+  foreach (entity_load_multiple('profile2_type') as $id => $type) {
     if ($type->get('registration')) {
       if (empty($form_state['profiles'][$id])) {
         $form_state['profiles'][$id] = entity_create('profile2', array('type' => $id));
