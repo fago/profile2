@@ -56,93 +56,30 @@ class Profile extends Entity {
    */
   public $changed;
 
-  public function __construct(array $values = array(), $entity_type) {
-    if (isset($values['user'])) {
-      $this->setUser($values['user']);
-      unset($values['user']);
-    }
-    if (isset($values['type']) && is_object($values['type'])) {
-      $values['type'] = $values['type']->type;
-    }
-    if (!isset($values['label']) && isset($values['type']) && $type = profile2_type_load($values['type'])) {
-      // Initialize the label with the type label, so newly created profiles
-      // have that as interim label.
-      $values['label'] = $type->label;
-    }
-    parent::__construct($values, $entity_type);
-  }
-
   /**
-   * Returns the user owning this profile.
-   */
-  public function user() {
-    return user_load($this->uid);
-  }
-
-  /**
-   * Sets a new user owning this profile.
-   *
-   * @param $account
-   *   The user account object or the user account id (uid).
-   */
-  public function setUser($account) {
-    $this->uid = is_object($account) ? $account->uid : $account;
-  }
-
-  /**
-   * Gets the associated profile type object.
-   *
-   * @return ProfileType
-   */
-  public function type() {
-    return profile2_type_load($this->type);
-  }
-
-  /**
-   * Overwrites EntityInterface::id().
+   * Overrides Drupal\Core\Entity\Entity::id().
    */
   public function id() {
     return isset($this->pid) ? $this->pid : NULL;
   }
 
   /**
-   * Overwrites EntityInterface::bundle().
+   * Overrides Drupal\Core\Entity\Entity::bundle().
    */
   public function bundle() {
     return $this->type;
   }
 
   /**
-   * Returns the full url() for the profile.
+   * Overrides Drupal\Core\Entity\Entity::label().
    */
-  public function url() {
-    $uri = $this->uri();
-    return url($uri['path'], $uri);
-  }
-
-  /**
-   * Returns the drupal path to this profile.
-   */
-  public function path() {
-    $uri = $this->uri();
-    return $uri['path'];
-  }
-
-  public function defaultUri() {
-    return array(
-      'path' => 'user/' . $this->uid,
-      'options' => array('fragment' => 'profile-' . $this->type),
-    );
-  }
-
-  public function defaultLabel() {
-    if (module_exists('profile2_i18n')) {
-      // Run the label through i18n_string() using the profile2_type label
-      // context, so the default label (= the type's label) gets translated.
-      return entity_i18n_string('profile2:profile2_type:' . $this->type . ':label', $this->label);
+  public function label($langcode = NULL) {
+    if (isset($this->label) && $this->label !== '') {
+      return $this->label;
     }
-    return $this->label;
+    else {
+      return entity_load('profile2_type', $this->type)->label($langcode);
+    }
   }
 
 }
-

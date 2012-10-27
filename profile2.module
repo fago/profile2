@@ -82,13 +82,12 @@ function profile2_entity_info() {
  * Entity URI callback for profiles.
  *
  * @param Drupal\profile2\Profile $profile
- *   A Profile entity.
+ *   A profile entity.
  */
 function profile2_profile_uri(Profile $profile) {
-  // @todo Call into user_uri() to ensure consistent URIs?
-  return array(
-    'path' => 'user/' . $profile->uid,
-  );
+  $uri = entity_load('user', $profile->uid)->uri();
+  $uri['options']['fragment'] = 'profile-' . $profile->bundle();
+  return $uri;
 }
 
 /**
@@ -359,8 +358,8 @@ function profile2_user_view($account, $view_mode, $langcode) {
       if (profile2_access('view', $profile)) {
         $account->content['profile_' . $id] = array(
           '#type' => 'user_profile_category',
-          '#title' => $profile->label,
-          '#prefix' => '<a id="profile-' . $profile->type . '"></a>',
+          '#title' => $profile->label(),
+          '#prefix' => '<a id="profile-' . $profile->bundle() . '"></a>',
         );
         entity_render_controller('profile2')->buildContent(array($profile), 'account');
         $account->content['profile_' . $id]['view'] = $profile->content;

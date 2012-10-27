@@ -46,7 +46,7 @@ class ProfileCRUDTest extends WebTestBase {
     ));
     $this->assertIdentical($profile->id(), NULL);
     $this->assertIdentical($profile->type, $expected['type']);
-    $this->assertIdentical($profile->label, $types[0]->label());
+    $this->assertIdentical($profile->label(), $types[0]->label());
     $this->assertIdentical($profile->uid, $this->user1->id());
     $this->assertIdentical($profile->created, REQUEST_TIME);
     $this->assertIdentical($profile->changed, NULL);

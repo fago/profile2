@@ -195,7 +195,7 @@ function profile2_page_entity_info_alter(&$entity_info) {
  * @see profile2_pages_entity_info_alter()
  */
 function profile2_page_uri_callback($profile) {
-  $type = $profile->type();
+  $type = entity_load('profile2_type', $profile->type);
   if (!empty($type->data['use_page'])) {
     return array('path' => profile2_page_get_base_path($type) . '/' . $profile->uid);
   }
