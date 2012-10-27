@@ -311,44 +311,34 @@ function profile2_get_types() {
 /**
  * Fetch profiles by account.
  *
- * @param $account
- *   The user account to load profiles for, or its uid.
- * @param $type_name
- *   To load a single profile, pass the type name of the profile to load.
- * @return
- *   Either a single profile or an array of profiles keyed by profile type.
+ * @param \Drupal\user\User $account
+ *   The user account to load profiles for.
+ * @param string $type_id
+ *   (optional) If passed, only the user account's profile of the specified type
+ *   is loaded. If omitted, all profiles of the user account are loaded.
  *
- * @see profile2_profile2_delete()
- * @see Profile::save()
+ * @return array|\Drupal\profile2\Profile|false
+ *   If a $type_id was passed, the corresponding profile or FALSE, otherwise all
+ *   existing profiles of $account keyed by profile type ID.
  */
-function profile2_load_by_user($account, $type_name = NULL) {
-  // Use a separate query to determine all profile ids per user and cache them.
-  // That way we can look up profiles by id and benefit from the static cache
-  // of the entity loader.
-  $cache = &drupal_static(__FUNCTION__, array());
-  $uid = is_object($account) ? $account->uid : $account;
-
-  if (!isset($cache[$uid])) {
-    if (empty($type_name)) {
-      $profiles = entity_load_multiple_by_properties('profile2', array('uid' => $uid));
-      // Cache ids for further lookups.
-      $cache[$uid] = array();
-      foreach ($profiles as $pid => $profile) {
-        $cache[$uid][$profile->type] = $pid;
-      }
-      return $profiles ? array_combine(array_keys($cache[$uid]), $profiles) : array();
+function profile2_load_by_user(User $account, $type_id = NULL) {
+  if (!isset($type_id)) {
+    $profiles = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $account->id(),
+    ));
+    $return = array();
+    foreach ($profiles as $profile) {
+      $return[$profile->bundle()] = $profile;
     }
-    $cache[$uid] = db_select('profile', 'p')
-      ->fields('p', array('type', 'pid'))
-      ->condition('uid', $uid)
-      ->execute()
-      ->fetchAllKeyed();
+    return $return;
   }
-  if (isset($type_name)) {
-    return isset($cache[$uid][$type_name]) ? entity_load('profile2', $cache[$uid][$type_name]) : FALSE;
+  else {
+    $profiles = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $account->id(),
+      'type' => $type_id,
+    ));
+    return reset($profiles) ?: FALSE;
   }
-  // Return an array containing profiles keyed by profile type.
-  return $cache[$uid] ? array_combine(array_keys($cache[$uid]), entity_load_multiple('profile2', $cache[$uid])) : $cache[$uid];
 }
 
 /**

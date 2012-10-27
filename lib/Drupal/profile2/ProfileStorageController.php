@@ -37,30 +37,4 @@ class ProfileStorageController extends DatabaseStorageController {
     $entity->changed = REQUEST_TIME;
   }
 
-  /**
-   * Overrides Drupal\Core\Entity\DatabaseStorageController::postSave().
-   */
-  protected function postSave(EntityInterface $entity, $update) {
-    parent::postSave($entity, $update);
-
-    // Update the static cache from profile2_load_by_user().
-    $cache = &drupal_static('profile2_load_by_user', array());
-    unset($cache[$entity->uid]);
-
-    if ($update) {
-      unset($cache[$entity->original->uid]);
-    }
-  }
-
-  /**
-   * Overrides Drupal\Core\Entity\DatabaseStorageController::postSave().
-   */
-  protected function postDelete($entities) {
-    // Update the static cache from profile2_load_by_user().
-    $cache = &drupal_static('profile2_load_by_user', array());
-    foreach ($entities as $entity) {
-      unset($cache[$entity->uid]);
-    }
-  }
-
 }

@@ -78,10 +78,6 @@ class ProfileEditTest extends WebTestBase {
     $this->assertEqual($profiles['test']->label(), 'label', 'Created and loaded profile 1.');
     $this->assertEqual($profiles['test2']->label(), 'label2', 'Created and loaded profile 2.');
 
-    // Test looking up from static cache works also.
-    $profiles = profile2_load_by_user($user1);
-    $this->assertEqual($profiles['test']->label, 'label', 'Looked up profiles again.');
-
     $loaded = entity_load('profile2', $profile->pid);
     $this->assertEqual($loaded->pid, $profile->pid, 'Loaded profile unrelated to a user.');
 
@@ -115,7 +111,8 @@ class ProfileEditTest extends WebTestBase {
     $this->assertText(t('A welcome message with further instructions has been sent to your e-mail address.'), t('User registered successfully.'));
     $new_user = user_load_by_name($name);
     $this->assertTrue((bool) $new_user->status, t('New account is active after registration.'));
-    $this->assertEqual(profile2_load_by_user($new_user, 'main')->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_main[profile_fullname][und][0][value]'], 'Profile created.');
+    $profile = profile2_load_by_user($new_user, 'main');
+    $this->assertEqual($profile->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_main[profile_fullname][und][0][value]'], 'Profile created.');
   }
 
   /**
@@ -143,7 +140,8 @@ class ProfileEditTest extends WebTestBase {
     $edit['profile_fullname[und][0][value]'] = $this->randomName();
     $this->drupalPost('user/' . $user2->uid . '/edit/main', $edit, t('Save'));
     $this->assertText(t('Your profile has been saved.'), 'Profile saved.');
-    $this->assertEqual(profile2_load_by_user($user2, 'main')->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_fullname[und][0][value]'], 'Profile edited.');
+    $profile = profile2_load_by_user($user2, 'main');
+    $this->assertEqual($profile->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_fullname[und][0][value]'], 'Profile edited.');
 
     $this->drupalGet('user/' . $user2->uid);
     $this->assertText(check_plain($edit['profile_fullname[und][0][value]']), 'Profile displayed.');
