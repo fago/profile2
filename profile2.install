@@ -37,6 +37,12 @@ function profile2_schema() {
         'not null' => TRUE,
         'description' => 'Primary Key: Unique profile item ID.',
       ),
+      'uuid' => array(
+        'description' => 'Unique Key: Universally unique identifier for this entity.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+      ),
       'type' => array(
         'description' => 'The profile type ID of this profile.',
         'type' => 'varchar',
@@ -79,6 +85,9 @@ function profile2_schema() {
       ),
     ),
     'primary key' => array('pid'),
+    'unique keys' => array(
+      'uuid' => array('uuid'),
+    ),
   );
   return $schema;
 }

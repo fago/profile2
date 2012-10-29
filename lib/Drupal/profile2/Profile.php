@@ -22,6 +22,13 @@ class Profile extends Entity {
   public $pid;
 
   /**
+   * The profile UUID.
+   *
+   * @var string
+   */
+  public $uuid;
+
+  /**
    * The name of the profile type.
    *
    * @var string

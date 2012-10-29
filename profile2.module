@@ -33,6 +33,7 @@ function profile2_entity_info() {
       ),
       'entity keys' => array(
         'id' => 'pid',
+        'uuid' => 'uuid',
         'bundle' => 'type',
         'label' => 'label',
       ),
