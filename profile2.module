@@ -155,6 +155,8 @@ function profile2_menu() {
   $items['user/%user/edit/%profile2_menu'] = array(
     'load arguments' => array('%map', 'edit'),
     'title' => 'Edit profile',
+    'title callback' => 'profile2_menu_title_profile',
+    'title arguments' => array(3),
     'access callback' => 'profile2_profile_edit_access',
     'access arguments' => array(3),
     'page callback' => 'profile2_profile_edit',
@@ -168,7 +170,7 @@ function profile2_menu() {
     'access arguments' => array('delete', 3),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('profile2_delete_confirm_form', 3),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_VISIBLE_IN_BREADCRUMB,
     'file' => 'profile2.pages.inc',
   );
   return $items;
@@ -205,6 +207,19 @@ function profile2_menu_load($type_id, $map, $op = '') {
     ));
   }
   return $profile;
+}
+
+/**
+ * Menu title callback for a profile edit link.
+ *
+ * @param Drupal\profile2\Profile $profile
+ *   The profile to return a title for.
+ *
+ * @return string
+ *   The unsanitized profile label.
+ */
+function profile2_menu_title_profile(Profile $profile) {
+  return $profile->label();
 }
 
 /**
