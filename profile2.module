@@ -161,6 +161,16 @@ function profile2_menu() {
     'page arguments' => array(3),
     'type' => MENU_LOCAL_TASK,
   );
+  $items['user/%user/edit/%profile2_menu/delete'] = array(
+    'load arguments' => array('%map', 'edit'),
+    'title' => 'Delete profile',
+    'access callback' => 'profile2_access',
+    'access arguments' => array('delete', 3),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('profile2_delete_confirm_form', 3),
+    'type' => MENU_CALLBACK,
+    'file' => 'profile2.pages.inc',
+  );
   return $items;
 }
 
@@ -291,6 +301,12 @@ function profile2_permission() {
       ),
       "view any $type_name profile" => array(
         'title' => t('%type_name: View any profile', array('%type_name' => $type->label())),
+      ),
+      "delete own $type_name profile" => array(
+        'title' => t('%type_name: Delete own profile', array('%type_name' => $type->label())),
+      ),
+      "delete any $type_name profile" => array(
+        'title' => t('%type_name: Delete any profile', array('%type_name' => $type->label())),
       ),
     );
   }

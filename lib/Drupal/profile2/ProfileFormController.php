@@ -20,7 +20,7 @@ class ProfileFormController extends EntityFormController {
   protected function actionsElement(array $form, array &$form_state) {
     $element = parent::actionsElement($form, $form_state);
 
-    if (!user_access('administer profiles')) {
+    if (!profile2_access('delete', $this->getEntity($form_state))) {
       unset($element['delete']);
     }
 
@@ -40,6 +40,15 @@ class ProfileFormController extends EntityFormController {
     else {
       drupal_set_message(t("%name's profile has been updated.", array('%name' => user_format_name(user_load($profile->uid)))));
     }
+  }
+
+  /**
+   * Overrides Drupal\Core\Entity\EntityFormController::delete().
+   */
+  public function delete(array $form, array &$form_state) {
+    $profile = $this->getEntity($form_state);
+    // Redirect to the deletion confirmation form.
+    $form_state['redirect'] = 'user/' . $profile->uid . '/edit/' . $profile->bundle() . '/delete';
   }
 
 }
