@@ -44,7 +44,7 @@ function profile2_type_delete_form($form, &$form_state, ProfileType $type) {
   $form['id'] = array('#type' => 'value', '#value' => $type->id());
   return confirm_form($form,
     t('Are you sure you want to delete %label', array('%label' => $type->label())),
-    'admin/structure/profiles',
+    'admin/people/profiles',
     NULL,
     t('Delete')
   );
@@ -55,5 +55,5 @@ function profile2_type_delete_form($form, &$form_state, ProfileType $type) {
  */
 function profile2_type_delete_form_submit($form, &$form_state) {
   $form_state['profile2_type']->delete();
-  $form_state['redirect'] = 'admin/structure/profiles';
+  $form_state['redirect'] = 'admin/people/profiles';
 }

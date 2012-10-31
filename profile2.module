@@ -19,12 +19,11 @@ function profile2_entity_info_alter(&$info) {
   $config_names = config_get_storage_names_with_prefix('profile2.type.');
   foreach ($config_names as $config_name) {
     $config = config($config_name);
-
     $info['profile2']['bundles'][$config->get('id')] = array(
       'label' => $config->get('label'),
       'admin' => array(
-        'path' => 'admin/structure/profiles/manage/%profile2_type',
-        'real path' => 'admin/structure/profiles/manage/' . $config->get('id'),
+        'path' => 'admin/people/profiles/manage/%profile2_type',
+        'real path' => 'admin/people/profiles/manage/' . $config->get('id'),
         'bundle argument' => 4,
         'access arguments' => array('administer profiles'),
       ),
@@ -52,7 +51,7 @@ function profile2_profile_uri(Profile $profile) {
  */
 function profile2_profile_type_uri(ProfileType $profile_type) {
   return array(
-    'path' => 'admin/structure/profiles/manage/' . $profile_type->id(),
+    'path' => 'admin/people/profiles/manage/' . $profile_type->id(),
   );
 }
 
@@ -60,37 +59,35 @@ function profile2_profile_type_uri(ProfileType $profile_type) {
  * Implements hook_menu().
  */
 function profile2_menu() {
-  $items['admin/structure/profiles'] = array(
+  $items['admin/people/profiles'] = array(
     'title' => 'Profile types',
     'description' => 'Manage profiles, including fields.',
     'page callback' => 'profile2_type_list_page',
     'access arguments' => array('administer profile types'),
+    'type' => MENU_LOCAL_TASK,
+    // @todo User module: Apply custom/higher weights to Permissions and Roles.
+    'weight' => -1,
   );
-  $items['admin/structure/profiles/list'] = array(
-    'title' => 'List',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
-  $items['admin/structure/profiles/add'] = array(
+  $items['admin/people/profiles/add'] = array(
     'title' => 'Add profile type',
     'page callback' => 'profile2_type_add',
     'access arguments' => array('administer profile types'),
     'type' => MENU_LOCAL_ACTION,
     'file' => 'profile2.admin.inc',
   );
-  $items['admin/structure/profiles/manage/%profile2_type'] = array(
+  $items['admin/people/profiles/manage/%profile2_type'] = array(
     'title' => 'Edit profile type',
     'page callback' => 'profile2_type_edit',
     'page arguments' => array(4),
     'access arguments' => array('administer profile types'),
     'file' => 'profile2.admin.inc',
   );
-  $items['admin/structure/profiles/manage/%profile2_type/edit'] = array(
+  $items['admin/people/profiles/manage/%profile2_type/edit'] = array(
     'title' => 'Edit',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
   );
-  $items['admin/structure/profiles/manage/%profile2_type/delete'] = array(
+  $items['admin/people/profiles/manage/%profile2_type/delete'] = array(
     'title' => 'Delete',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('profile2_type_delete_form', 4),
@@ -421,7 +418,7 @@ function profile2_attach_form(&$form, &$form_state) {
     if (count(field_info_instances('profile2', $bundle)) == 0) {
       $form['profile_' . $bundle]['message'] = array(
         '#access' => user_access('administer profile types'),
-        '#markup' => t('No fields have been associated with this profile type. Go to the <a href="!url">Profile types</a> page to add some fields.', array('!url' => url('admin/structure/profiles'))),
+        '#markup' => t('No fields have been associated with this profile type. Go to the <a href="!url">Profile types</a> page to add some fields.', array('!url' => url('admin/people/profiles'))),
       );
     }
 

@@ -56,7 +56,7 @@ class ProfileTypeFormController extends EntityFormController {
     else {
       drupal_set_message(t('%label profile type has been created.', array('%label' => $type->label())));
     }
-    $form_state['redirect'] = 'admin/structure/profiles';
+    $form_state['redirect'] = 'admin/people/profiles';
   }
 
   /**
@@ -64,6 +64,6 @@ class ProfileTypeFormController extends EntityFormController {
    */
   public function delete(array $form, array &$form_state) {
     $type = $this->getEntity($form_state);
-    $form_state['redirect'] = 'admin/structure/profiles/manage/' . $type->id() . '/delete';
+    $form_state['redirect'] = 'admin/people/profiles/manage/' . $type->id() . '/delete';
   }
 }

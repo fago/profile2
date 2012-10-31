@@ -31,9 +31,9 @@ class ProfileTypeCRUDTest extends WebTestBase {
     $this->drupalLogin($this->root_user);
 
     // Create a new profile type.
-    $this->drupalGet('admin/structure/profiles');
+    $this->drupalGet('admin/people/profiles');
     $this->clickLink(t('Add profile type'));
-    $this->assertUrl('admin/structure/profiles/add');
+    $this->assertUrl('admin/people/profiles/add');
     $id = drupal_strtolower($this->randomName());
     $label = $this->randomString();
     $edit = array(
@@ -41,25 +41,25 @@ class ProfileTypeCRUDTest extends WebTestBase {
       'label' => $label,
     );
     $this->drupalPost(NULL, $edit, t('Save'));
-    $this->assertUrl('admin/structure/profiles');
+    $this->assertUrl('admin/people/profiles');
     $this->assertRaw(t('%label profile type has been created.', array('%label' => $label)));
-    $this->assertLinkByHref("admin/structure/profiles/manage/$id/edit");
-    $this->assertLinkByHref("admin/structure/profiles/manage/$id/fields");
-    $this->assertLinkByHref("admin/structure/profiles/manage/$id/display");
-    $this->assertLinkByHref("admin/structure/profiles/manage/$id/delete");
+    $this->assertLinkByHref("admin/people/profiles/manage/$id/edit");
+    $this->assertLinkByHref("admin/people/profiles/manage/$id/fields");
+    $this->assertLinkByHref("admin/people/profiles/manage/$id/display");
+    $this->assertLinkByHref("admin/people/profiles/manage/$id/delete");
 
     // Edit the new profile type.
-    $this->drupalGet("admin/structure/profiles/manage/$id/edit");
+    $this->drupalGet("admin/people/profiles/manage/$id/edit");
     $this->assertRaw(t('Edit %label profile type', array('%label' => $label)));
     $edit = array(
       'registration' => 1,
     );
     $this->drupalPost(NULL, $edit, t('Save'));
-    $this->assertUrl('admin/structure/profiles');
+    $this->assertUrl('admin/people/profiles');
     $this->assertRaw(t('%label profile type has been updated.', array('%label' => $label)));
 
     // Add a field to the profile type.
-    $this->drupalGet("admin/structure/profiles/manage/$id/fields");
+    $this->drupalGet("admin/people/profiles/manage/$id/fields");
     $field_name = drupal_strtolower($this->randomName());
     $field_label = $this->randomString();
     $edit = array(
@@ -71,23 +71,23 @@ class ProfileTypeCRUDTest extends WebTestBase {
     $this->drupalPost(NULL, $edit, t('Save'));
     $this->drupalPost(NULL, array(), t('Save field settings'));
     $this->drupalPost(NULL, array(), t('Save settings'));
-    $this->assertUrl("admin/structure/profiles/manage/$id/fields");
+    $this->assertUrl("admin/people/profiles/manage/$id/fields");
 
     // Rename the profile type ID.
-    $this->drupalGet("admin/structure/profiles/manage/$id/edit");
+    $this->drupalGet("admin/people/profiles/manage/$id/edit");
     $new_id = drupal_strtolower($this->randomName());
     $edit = array(
       'id' => $new_id,
     );
     $this->drupalPost(NULL, $edit, t('Save'));
-    $this->assertUrl('admin/structure/profiles');
+    $this->assertUrl('admin/people/profiles');
     $this->assertRaw(t('%label profile type has been updated.', array('%label' => $label)));
-    $this->assertLinkByHref("admin/structure/profiles/manage/$new_id/edit");
-    $this->assertNoLinkByHref("admin/structure/profiles/manage/$id/edit");
+    $this->assertLinkByHref("admin/people/profiles/manage/$new_id/edit");
+    $this->assertNoLinkByHref("admin/people/profiles/manage/$id/edit");
     $id = $new_id;
 
     // Verify that the field is still associated with it.
-    $this->drupalGet("admin/structure/profiles/manage/$id/fields");
+    $this->drupalGet("admin/people/profiles/manage/$id/fields");
     // @todo D8 core: This assertion fails for an unknown reason. Database
     //   contains the right values, so field_attach_rename_bundle() works
     //   correctly. Not even flushing all caches helps. Can be reproduced
