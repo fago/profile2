@@ -5,51 +5,22 @@
  * Support for configurable user profiles.
  */
 
-use Drupal\profile2\Profile;
-use Drupal\profile2\ProfileType;
-use Drupal\user\User;
+use Drupal\profile2\Plugin\Core\Entity\Profile;
+use Drupal\profile2\Plugin\Core\Entity\ProfileType;
+use Drupal\user\Plugin\Core\Entity\User;
+use Drupal\Core\Annotation\Plugin;
+use Drupal\Core\Annotation\Translation;
 
 /**
- * Implements hook_entity_info().
+ * Implements hook_entity_info_alter().
  */
-function profile2_entity_info() {
-  $return = array(
-    'profile2' => array(
-      'label' => t('Profile'),
-      'entity class' => 'Drupal\profile2\Profile',
-      'base table' => 'profile',
-      'uri callback' => 'profile2_profile_uri',
-      'fieldable' => TRUE,
-      'controller class' => 'Drupal\profile2\ProfileStorageController',
-      'form controller class' => array(
-        'default' => 'Drupal\profile2\ProfileFormController',
-      ),
-      'render controller class' => 'Drupal\Core\Entity\EntityRenderController',
-      'view modes' => array(
-        'account' => array(
-          'label' => t('User account'),
-          'custom settings' => FALSE,
-        ),
-      ),
-      'entity keys' => array(
-        'id' => 'pid',
-        'uuid' => 'uuid',
-        'bundle' => 'type',
-        'label' => 'label',
-      ),
-      'bundles' => array(),
-      'bundle keys' => array(
-        'bundle' => 'id',
-      ),
-    ),
-  );
-
+function profile2_entity_info_alter(&$info) {
   // Add bundle info but bypass entity_load() as we cannot use it here.
   $config_names = config_get_storage_names_with_prefix('profile2.type.');
   foreach ($config_names as $config_name) {
     $config = config($config_name);
 
-    $return['profile2']['bundles'][$config->get('id')] = array(
+    $info['profile2']['bundles'][$config->get('id')] = array(
       'label' => $config->get('label'),
       'admin' => array(
         'path' => 'admin/structure/profiles/manage/%profile2_type',
@@ -59,30 +30,12 @@ function profile2_entity_info() {
       ),
     );
   }
-
-  $return['profile2_type'] = array(
-    'label' => t('Profile type'),
-    'entity class' => 'Drupal\profile2\ProfileType',
-    'uri callback' => 'profile2_profile_type_uri',
-    'controller class' => 'Drupal\profile2\ProfileTypeStorageController',
-    'list controller class' => 'Drupal\profile2\ProfileTypeListController',
-    'form controller class' => array(
-      'default' => 'Drupal\profile2\ProfileTypeFormController',
-    ),
-    'config prefix' => 'profile2.type',
-    'entity keys' => array(
-      'id' => 'id',
-      'label' => 'label',
-    ),
-  );
-
-  return $return;
 }
 
 /**
  * Entity URI callback for profiles.
  *
- * @param Drupal\profile2\Profile $profile
+ * @param Drupal\profile2\Plugin\Core\Entity\Profile $profile
  *   A profile entity.
  */
 function profile2_profile_uri(Profile $profile) {
@@ -94,7 +47,7 @@ function profile2_profile_uri(Profile $profile) {
 /**
  * Entity URI callback for profile types.
  *
- * @param Drupal\profile2\ProfileType $profile_type
+ * @param Drupal\profile2\Plugin\Core\Entity\ProfileType $profile_type
  *   A profile type entity.
  */
 function profile2_profile_type_uri(ProfileType $profile_type) {
@@ -189,7 +142,7 @@ function profile2_menu() {
  *   (optional) The operation to perform. If 'edit' and if there is no profile
  *   for the user account yet, a new profile entity will be created on the fly.
  *
- * @return Drupal\profile2\Profile|false
+ * @return Drupal\profile2\Plugin\Core\Entity\Profile|false
  *   The profile of type $type_id of the user account, or FALSE.
  */
 function profile2_menu_load($type_id, $map, $op = '') {
@@ -213,7 +166,7 @@ function profile2_menu_load($type_id, $map, $op = '') {
 /**
  * Menu title callback for a profile edit link.
  *
- * @param Drupal\profile2\Profile $profile
+ * @param Drupal\profile2\Plugin\Core\Entity\Profile $profile
  *   The profile to return a title for.
  *
  * @return string
@@ -281,7 +234,7 @@ function profile2_type_list_page() {
  * @param string $id
  *   The machine-readable name of a profile type to load.
  *
- * @return Drupal\profile2\ProfileType|false
+ * @return Drupal\profile2\Plugin\Core\Entity\ProfileType|false
  *   A profile type array or FALSE if $type does not exist.
  */
 function profile2_type_load($id) {
@@ -332,13 +285,13 @@ function profile2_permission() {
 /**
  * Fetch profiles by account.
  *
- * @param \Drupal\user\User $account
+ * @param \Drupal\user\Plugin\Core\Entity\User $account
  *   The user account to load profiles for.
  * @param string $type_id
  *   (optional) If passed, only the user account's profile of the specified type
  *   is loaded. If omitted, all profiles of the user account are loaded.
  *
- * @return array|\Drupal\profile2\Profile|false
+ * @return array|\Drupal\profile2\Plugin\Core\Entity\Profile|false
  *   If a $type_id was passed, the corresponding profile or FALSE, otherwise all
  *   existing profiles of $account keyed by profile type ID.
  */
@@ -415,7 +368,7 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
 /**
  * Menu access callback; Determines edit access for a requested profile.
  *
- * @param Drupal\profile2\Profile $profile
+ * @param Drupal\profile2\Plugin\Core\Entity\Profile $profile
  *   The profile to check for edit access.
  *
  * @return bool
@@ -429,7 +382,7 @@ function profile2_profile_edit_access(Profile $profile) {
 /**
  * Page callback; Presents the form to edit a profile of a user.
  *
- * @param Drupal\profile2\Profile $profile
+ * @param Drupal\profile2\Plugin\Core\Entity\Profile $profile
  *   The user account profile to edit.
  *
  * @return array

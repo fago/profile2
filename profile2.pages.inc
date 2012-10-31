@@ -5,12 +5,12 @@
  * Page and form callbacks for profiles.
  */
 
-use Drupal\profile2\Profile;
+use Drupal\profile2\Plugin\Core\Entity\Profile;
 
 /**
  * Form constructor to confirm deletion of a profile.
  *
- * @param Drupal\profile2\Profile $profile
+ * @param Drupal\profile2\Plugin\Core\Entity\Profile $profile
  *   The profile to delete.
  *
  * @return array

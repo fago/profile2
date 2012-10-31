@@ -5,7 +5,7 @@
  * Profile type editing UI.
  */
 
-use Drupal\profile2\ProfileType;
+use Drupal\profile2\Plugin\Core\Entity\ProfileType;
 
 /**
  * Page callback: Presents the form for creating a profile type.
@@ -21,7 +21,7 @@ function profile2_type_add() {
 /**
  * Page callback: Presents the form for editing a profile type.
  *
- * @param Drupal\profile2\ProfileType $type
+ * @param Drupal\profile2\Plugin\Core\Entity\ProfileType $type
  *   The profile type to edit.
  *
  * @return array
@@ -35,7 +35,7 @@ function profile2_type_edit(ProfileType $type) {
 /**
  * Form constructor to delete a ProfileType object.
  *
- * @param Drupal\profile2\ProfileType $type
+ * @param Drupal\profile2\Plugin\Core\Entity\ProfileType $type
  *   The ProfileType object to delete.
  */
 function profile2_type_delete_form($form, &$form_state, ProfileType $type) {
