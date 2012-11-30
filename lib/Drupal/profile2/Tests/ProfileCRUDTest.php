@@ -7,14 +7,14 @@
 
 namespace Drupal\profile2\Tests;
 
-use Drupal\simpletest\WebTestBase;
+use Drupal\simpletest\DrupalUnitTestBase;
 
 /**
  * Tests basic CRUD functionality of profiles.
  */
-class ProfileCRUDTest extends WebTestBase {
+class ProfileCRUDTest extends DrupalUnitTestBase {
 
-  public static $modules = array('profile2');
+  public static $modules = array('system', 'field', 'field_sql_storage', 'user', 'profile2');
 
   public static function getInfo() {
     return array(
@@ -22,6 +22,13 @@ class ProfileCRUDTest extends WebTestBase {
       'description' => 'Tests basic CRUD functionality of profiles.',
       'group' => 'Profile2',
     );
+  }
+
+  function setUp() {
+    parent::setUp();
+    $this->installSchema('system', 'url_alias');
+    $this->installSchema('system', 'sequences');
+    $this->enableModules(array('field', 'user', 'profile2'));
   }
 
   /**
@@ -36,8 +43,16 @@ class ProfileCRUDTest extends WebTestBase {
       $types[$id] = entity_create('profile2_type', array('id' => $id) + $values);
       $types[$id]->save();
     }
-    $this->user1 = $this->drupalCreateUser();
-    $this->user2 = $this->drupalCreateUser();
+    $this->user1 = entity_create('user', array(
+      'name' => $this->randomName(),
+      'mail' => $this->randomName() . '@example.com',
+    ));
+    $this->user1->save();
+    $this->user2 = entity_create('user', array(
+      'name' => $this->randomName(),
+      'mail' => $this->randomName() . '@example.com',
+    ));
+    $this->user2->save();
 
     // Create a new profile.
     $profile = entity_create('profile2', $expected = array(
