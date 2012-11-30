@@ -75,7 +75,14 @@ class ProfileEditTest extends WebTestBase {
     $profile = entity_create('profile2', array('type' => 'test', 'uid' => NULL));
     $profile->save();
 
-    $profiles = profile2_load_by_user($user1);
+    $entities = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $user1->uid,
+    ));
+    $profiles = array();
+    foreach ($entities as $item) {
+      $profiles[$item->type] = $item;
+    }
+
     $this->assertEqual($profiles['test']->label(), 'label', 'Created and loaded profile 1.');
     $this->assertEqual($profiles['test2']->label(), 'label2', 'Created and loaded profile 2.');
 
@@ -83,7 +90,14 @@ class ProfileEditTest extends WebTestBase {
     $this->assertEqual($loaded->pid, $profile->pid, 'Loaded profile unrelated to a user.');
 
     $profiles['test']->delete();
-    $profiles2 = profile2_load_by_user($user1);
+    $entities = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $user1->uid,
+    ));
+    $profiles2 = array();
+    foreach ($entities as $item) {
+      $profiles2[$item->type] = $item;
+    }
+
     $this->assertEqual(array_keys($profiles2), array('test2'), 'Profile successfully deleted.');
 
     $profiles2['test2']->save();
@@ -112,7 +126,12 @@ class ProfileEditTest extends WebTestBase {
     $this->assertText(t('A welcome message with further instructions has been sent to your e-mail address.'), t('User registered successfully.'));
     $new_user = user_load_by_name($name);
     $this->assertTrue((bool) $new_user->status, t('New account is active after registration.'));
-    $profile = profile2_load_by_user($new_user, 'test');
+
+    $profiles = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $new_user->uid,
+      'type' => 'test',
+    ));
+    $profile = reset($profiles);
     $this->assertEqual($profile->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_test[profile_fullname][und][0][value]'], 'Profile created.');
   }
 
@@ -141,7 +160,12 @@ class ProfileEditTest extends WebTestBase {
     $edit['profile_fullname[und][0][value]'] = $this->randomName();
     $this->drupalPost('user/' . $user2->uid . '/edit/test', $edit, t('Save'));
     $this->assertText(t('Your profile has been saved.'), 'Profile saved.');
-    $profile = profile2_load_by_user($user2, 'test');
+
+    $profiles = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $user2->uid,
+      'type' => 'test',
+    ));
+    $profile = reset($profiles);
     $this->assertEqual($profile->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_fullname[und][0][value]'], 'Profile edited.');
 
     $this->drupalGet('user/' . $user2->uid);

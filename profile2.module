@@ -150,8 +150,11 @@ function profile2_menu_load($type_id, $map, $op = '') {
     return FALSE;
   }
   $account = $map[1];
-  $profile = profile2_load_by_user($account, $type_id);
-  if ($op == 'edit' && empty($profile)) {
+  $profiles = entity_load_multiple_by_properties('profile2', array(
+    'uid' => $account->id(),
+    'type' => $type_id,
+  ));
+  if ($op == 'edit' && !$profile = reset($profiles)) {
     $profile = entity_create('profile2', array(
       'type' => $type_id,
       'uid' => $account->uid,
@@ -280,39 +283,6 @@ function profile2_permission() {
 }
 
 /**
- * Fetch profiles by account.
- *
- * @param \Drupal\user\Plugin\Core\Entity\User $account
- *   The user account to load profiles for.
- * @param string $type_id
- *   (optional) If passed, only the user account's profile of the specified type
- *   is loaded. If omitted, all profiles of the user account are loaded.
- *
- * @return array|\Drupal\profile2\Plugin\Core\Entity\Profile|false
- *   If a $type_id was passed, the corresponding profile or FALSE, otherwise all
- *   existing profiles of $account keyed by profile type ID.
- */
-function profile2_load_by_user(User $account, $type_id = NULL) {
-  if (!isset($type_id)) {
-    $profiles = entity_load_multiple_by_properties('profile2', array(
-      'uid' => $account->id(),
-    ));
-    $return = array();
-    foreach ($profiles as $profile) {
-      $return[$profile->bundle()] = $profile;
-    }
-    return $return;
-  }
-  else {
-    $profiles = entity_load_multiple_by_properties('profile2', array(
-      'uid' => $account->id(),
-      'type' => $type_id,
-    ));
-    return reset($profiles) ?: FALSE;
-  }
-}
-
-/**
  * Implements hook_user_predelete().
  */
 function profile2_user_predelete($account) {
@@ -326,7 +296,12 @@ function profile2_user_predelete($account) {
  */
 function profile2_user_view($account, $view_mode, $langcode) {
   foreach (entity_load_multiple('profile2_type') as $id => $type) {
-    if ($profile = profile2_load_by_user($account, $id)) {
+    $profiles = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $account->id(),
+      'type' => $id,
+    ));
+
+    if ($profile = reset($profiles)) {
       if ($profile->access('view')) {
         $account->content['profile_' . $id] = array(
           '#type' => 'user_profile_category',

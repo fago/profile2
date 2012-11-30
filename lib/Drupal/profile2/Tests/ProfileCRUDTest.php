@@ -74,9 +74,11 @@ class ProfileCRUDTest extends DrupalUnitTestBase {
     $this->assertIdentical($profile->changed, REQUEST_TIME);
 
     // List profiles for the user and verify that the new profile appears.
-    $list = profile2_load_by_user($this->user1);
+    $list = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $this->user1->uid,
+    ));
     $this->assertEqual($list, array(
-      $profile->bundle() => $profile,
+      $profile->id() => $profile,
     ));
 
     // Reload and update the profile.
@@ -101,18 +103,22 @@ class ProfileCRUDTest extends DrupalUnitTestBase {
     $user1_profile2 = $profile;
 
     // List profiles for the user and verify that both profiles appear.
-    $list = profile2_load_by_user($this->user1);
+    $list = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $this->user1->uid,
+    ));
     $this->assertEqual($list, array(
-      $user1_profile1->bundle() => $user1_profile1,
-      $user1_profile2->bundle() => $user1_profile2,
+      $user1_profile1->id() => $user1_profile1,
+      $user1_profile2->id() => $user1_profile2,
     ));
 
     // Delete the second profile and verify that the first still exists.
     $user1_profile2->delete();
     $this->assertFalse(entity_load('profile2', $user1_profile2->id()));
-    $list = profile2_load_by_user($this->user1);
+    $list = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $this->user1->uid,
+    ));
     $this->assertEqual($list, array(
-      $user1_profile1->bundle() => $user1_profile1,
+      $user1_profile1->id() => $user1_profile1,
     ));
 
     // Create a new second profile.
@@ -134,13 +140,17 @@ class ProfileCRUDTest extends DrupalUnitTestBase {
     // Delete the first user and verify that all of its profiles are deleted.
     $this->user1->delete();
     $this->assertFalse(entity_load('user', $this->user1->id()));
-    $list = profile2_load_by_user($this->user1);
+    $list = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $this->user1->uid,
+    ));
     $this->assertEqual($list, array());
 
     // List profiles for the second user and verify that they still exist.
-    $list = profile2_load_by_user($this->user2);
+    $list = entity_load_multiple_by_properties('profile2', array(
+      'uid' => $this->user2->uid,
+    ));
     $this->assertEqual($list, array(
-      $user2_profile1->bundle() => $user2_profile1,
+      $user2_profile1->id() => $user2_profile1,
     ));
 
     // @todo
