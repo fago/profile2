@@ -90,8 +90,9 @@ class ProfileTypeCRUDTest extends WebTestBase {
     $this->drupalGet("admin/people/profiles/manage/$id/fields");
     // @todo D8 core: This assertion fails for an unknown reason. Database
     //   contains the right values, so field_attach_rename_bundle() works
-    //   correctly. Not even flushing all caches helps. Can be reproduced
-    //   manually.
+    //   correctly. The pre-existing field does not appear on the Manage
+    //   fields page of the renamed bundle. Not even flushing all caches
+    //   helps. Can be reproduced manually.
     //$this->assertText(check_plain($field_label));
   }
 
