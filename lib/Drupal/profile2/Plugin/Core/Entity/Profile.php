@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of Drupal\profile2\Plugin\Core\Entity\Profile.
+ * Contains Drupal\profile2\Plugin\Core\Entity\Profile.
  */
 
 namespace Drupal\profile2\Plugin\Core\Entity;
@@ -96,21 +96,21 @@ class Profile extends Entity implements ContentEntityInterface {
   public $changed;
 
   /**
-   * Overrides Drupal\Core\Entity\Entity::id().
+   * Overrides Entity::id().
    */
   public function id() {
     return isset($this->pid) ? $this->pid : NULL;
   }
 
   /**
-   * Overrides Drupal\Core\Entity\Entity::bundle().
+   * Overrides Entity::bundle().
    */
   public function bundle() {
     return $this->type;
   }
 
   /**
-   * Overrides Drupal\Core\Entity\Entity::label().
+   * Overrides Entity::label().
    */
   public function label($langcode = NULL) {
     if (isset($this->label) && $this->label !== '') {

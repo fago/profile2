@@ -568,13 +568,3 @@ function profile2_field_access($op, $field, $entity_type, $profile = NULL, $acco
     }
   }
 }
-
-/**
- * Entity metadata callback to load profiles for the given user account.
- */
-function profile2_user_get_properties($account, array $options, $name) {
-  // Remove the leading 'profile_' from the property name to get the type name.
-  $profile = profile2_load_by_user($account, substr($name, 8));
-  return $profile ? $profile : NULL;
-}
-

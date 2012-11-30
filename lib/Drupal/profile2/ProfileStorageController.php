@@ -16,7 +16,7 @@ use Drupal\Core\Entity\EntityInterface;
 class ProfileStorageController extends DatabaseStorageController {
 
   /**
-   * Overrides Drupal\Core\Entity\DatabaseStorageController::create().
+   * Overrides DatabaseStorageController::create().
    */
   public function create(array $values) {
     $entity = parent::create($values);
@@ -30,7 +30,7 @@ class ProfileStorageController extends DatabaseStorageController {
   }
 
   /**
-   * Overrides Drupal\Core\Entity\DatabaseStorageController::preSave().
+   * Overrides DatabaseStorageController::preSave().
    */
   protected function preSave(EntityInterface $entity) {
     // Before saving the profile set the 'changed' timestamp.

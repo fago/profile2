@@ -160,19 +160,6 @@ function profile2_page_forms($form_id, $args) {
 }
 
 /**
- * Implements hook_profile2_type_load().
- */
-function profile2_page_profile2_type_load($types) {
-  foreach ($types as $type) {
-    if (!empty($type->data['use_page'])) {
-      // Disable user categories and the user account view.
-      $type->userCategory = FALSE;
-      $type->userView = FALSE;
-    }
-  }
-}
-
-/**
  * Implements hook_entity_info_alter().
  */
 function profile2_page_entity_info_alter(&$entity_info) {

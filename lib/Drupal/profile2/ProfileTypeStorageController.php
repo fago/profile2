@@ -16,7 +16,7 @@ use Drupal\Core\Entity\EntityInterface;
 class ProfileTypeStorageController extends ConfigStorageController {
 
   /**
-   * Overrides \Drupal\Core\Config\Entity\ConfigStorageController::postSave().
+   * Overrides ConfigStorageController::postSave().
    */
   protected function postSave(EntityInterface $entity, $update) {
     parent::postSave($entity, $update);
@@ -30,7 +30,7 @@ class ProfileTypeStorageController extends ConfigStorageController {
   }
 
   /**
-   * Overrides \Drupal\Core\Config\Entity\ConfigStorageController::preDelete().
+   * Overrides ConfigStorageController::preDelete().
    */
   protected function preDelete($entities) {
     // Delete all profiles of this type.
@@ -40,7 +40,7 @@ class ProfileTypeStorageController extends ConfigStorageController {
   }
 
   /**
-   * Overrides \Drupal\Core\Config\Entity\ConfigStorageController::postDelete().
+   * Overrides ConfigStorageController::postDelete().
    */
   protected function postDelete($entities) {
     parent::postDelete($entities);

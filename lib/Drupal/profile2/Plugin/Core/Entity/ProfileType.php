@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Definition of Drupal\profile2\Plugin\Core\Entity\ProfileType.
+ * Contains Drupal\profile2\Plugin\Core\Entity\ProfileType.
  */
 
 namespace Drupal\profile2\Plugin\Core\Entity;
@@ -33,27 +33,39 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  */
 class ProfileType extends ConfigEntityBase {
 
+  /**
+   * The primary identifier of the profile type.
+   *
+   * @var integer
+   */
   public $id;
-  public $uuid;
-  public $label;
-
-  public $weight = 0;
 
   /**
-   * Whether profile type is shown during registration.
+   * The universally unique identifier of the profile type.
+   *
+   * @var string
+   */
+  public $uuid;
+
+  /**
+   * The human-readable name of the profile type.
+   *
+   * @var string
+   */
+  public $label;
+
+  /**
+   * Whether the profile type is shown during registration.
    *
    * @var boolean
    */
   public $registration = FALSE;
 
   /**
-   * Whether the profile type appears in the user categories.
+   * The weight of the profile type compared to others.
+   *
+   * @var integer
    */
-  public $userCategory = TRUE;
-
-  /**
-   * Whether the profile is displayed on the user account page.
-   */
-  public $userView = TRUE;
+  public $weight = 0;
 
 }

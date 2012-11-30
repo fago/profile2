@@ -16,7 +16,7 @@ use Drupal\Core\Entity\EntityFormController;
 class ProfileTypeFormController extends EntityFormController {
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::form().
+   * Overrides EntityFormController::form().
    */
   function form(array $form, array &$form_state, EntityInterface $type) {
     $form['label'] = array(
@@ -44,7 +44,7 @@ class ProfileTypeFormController extends EntityFormController {
   }
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::save().
+   * Overrides EntityFormController::save().
    */
   public function save(array $form, array &$form_state) {
     $type = $this->getEntity($form_state);
@@ -60,7 +60,7 @@ class ProfileTypeFormController extends EntityFormController {
   }
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::delete().
+   * Overrides EntityFormController::delete().
    */
   public function delete(array $form, array &$form_state) {
     $type = $this->getEntity($form_state);

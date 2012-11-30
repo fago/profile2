@@ -16,7 +16,7 @@ use Drupal\Core\Entity\EntityListController;
 class ProfileTypeListController extends EntityListController {
 
   /**
-   * Overrides Drupal\Core\Entity\EntityListController::getOperations().
+   * Overrides EntityListController::getOperations().
    */
   public function getOperations(EntityInterface $entity) {
     $operations = parent::getOperations($entity);

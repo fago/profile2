@@ -15,7 +15,7 @@ use Drupal\Core\Entity\EntityFormController;
 class ProfileFormController extends EntityFormController {
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::actionsElement().
+   * Overrides EntityFormController::actionsElement().
    */
   protected function actionsElement(array $form, array &$form_state) {
     $element = parent::actionsElement($form, $form_state);
@@ -28,7 +28,7 @@ class ProfileFormController extends EntityFormController {
   }
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::save().
+   * Overrides EntityFormController::save().
    */
   public function save(array $form, array &$form_state) {
     $profile = $this->getEntity($form_state);
@@ -43,7 +43,7 @@ class ProfileFormController extends EntityFormController {
   }
 
   /**
-   * Overrides Drupal\Core\Entity\EntityFormController::delete().
+   * Overrides EntityFormController::delete().
    */
   public function delete(array $form, array &$form_state) {
     $profile = $this->getEntity($form_state);
