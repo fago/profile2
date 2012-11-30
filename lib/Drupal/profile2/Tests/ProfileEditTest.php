@@ -30,18 +30,17 @@ class ProfileEditTest extends WebTestBase {
     $type = entity_create('profile2_type', array(
       'id' => 'test',
       'label' => 'label',
-      'weight' => 0
+      'weight' => 0,
+      'registration' => TRUE,
     ));
     $type->save();
     $type = entity_create('profile2_type', array(
       'id' => 'test2',
       'label' => 'label2',
-      'weight' => 2
+      'weight' => 2,
     ));
     $type->save();
-    entity_load_multiple('profile2', array(), TRUE);
 
-    // Add a field to main type, which is created during module installation.
     $field = array(
       'field_name' => 'profile_fullname',
       'type' => 'text',
@@ -52,7 +51,7 @@ class ProfileEditTest extends WebTestBase {
     $instance = array(
       'entity_type' => 'profile2',
       'field_name' => 'profile_fullname',
-      'bundle' => 'main',
+      'bundle' => 'test',
       'label' => 'Full name',
       'description' => 'Specify your first and last name.',
       'widget' => array(
@@ -61,6 +60,8 @@ class ProfileEditTest extends WebTestBase {
       ),
     );
     field_create_instance($instance);
+
+    $this->checkPermissions(array(), TRUE);
   }
 
   /**
@@ -106,41 +107,41 @@ class ProfileEditTest extends WebTestBase {
     $edit = array();
     $edit['name'] = $name = $this->randomName();
     $edit['mail'] = $mail = $edit['name'] . '@example.com';
-    $edit['profile_main[profile_fullname][und][0][value]'] = $this->randomName();
+    $edit['profile_test[profile_fullname][und][0][value]'] = $this->randomName();
     $this->drupalPost('user/register', $edit, t('Create new account'));
     $this->assertText(t('A welcome message with further instructions has been sent to your e-mail address.'), t('User registered successfully.'));
     $new_user = user_load_by_name($name);
     $this->assertTrue((bool) $new_user->status, t('New account is active after registration.'));
-    $profile = profile2_load_by_user($new_user, 'main');
-    $this->assertEqual($profile->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_main[profile_fullname][und][0][value]'], 'Profile created.');
+    $profile = profile2_load_by_user($new_user, 'test');
+    $this->assertEqual($profile->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_test[profile_fullname][und][0][value]'], 'Profile created.');
   }
 
   /**
    * Test basic edit and display.
    */
   function testEditAndDisplay() {
-    user_role_revoke_permissions(DRUPAL_AUTHENTICATED_RID, array('edit own main profile', 'view own main profile'));
+    user_role_revoke_permissions(DRUPAL_AUTHENTICATED_RID, array('edit own test profile', 'view own test profile'));
     $user1 = $this->drupalCreateUser();
     $this->drupalLogin($user1);
 
     // Make sure access is denied to the profile.
-    $this->drupalGet('user/' . $user1->uid . '/edit/main');
+    $this->drupalGet('user/' . $user1->uid . '/edit/test');
     $this->assertText(t('Access denied'), 'Access has been denied.');
 
     // Test creating a profile manually (e.g. by an admin) and ensure the user
     // may not see it.
-    entity_create('profile2', array('type' => 'main', 'uid' => $user1->uid))->save();
+    entity_create('profile2', array('type' => 'test', 'uid' => $user1->uid))->save();
     $this->drupalGet('user/' . $user1->uid);
-    $this->assertNoText(t('Main profile'), 'Profile data is not visible to the owner.');
+    $this->assertNoText('label', 'Profile data is not visible to the owner.');
 
-    $user2 = $this->drupalCreateUser(array('edit own main profile', 'view own main profile'));
+    $user2 = $this->drupalCreateUser(array('edit own test profile', 'view own test profile'));
     $this->drupalLogin($user2);
 
     // Create profiles for the user2.
     $edit['profile_fullname[und][0][value]'] = $this->randomName();
-    $this->drupalPost('user/' . $user2->uid . '/edit/main', $edit, t('Save'));
+    $this->drupalPost('user/' . $user2->uid . '/edit/test', $edit, t('Save'));
     $this->assertText(t('Your profile has been saved.'), 'Profile saved.');
-    $profile = profile2_load_by_user($user2, 'main');
+    $profile = profile2_load_by_user($user2, 'test');
     $this->assertEqual($profile->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_fullname[und][0][value]'], 'Profile edited.');
 
     $this->drupalGet('user/' . $user2->uid);
