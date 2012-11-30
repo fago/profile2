@@ -8,8 +8,6 @@
 use Drupal\profile2\Plugin\Core\Entity\Profile;
 use Drupal\profile2\Plugin\Core\Entity\ProfileType;
 use Drupal\user\Plugin\Core\Entity\User;
-use Drupal\Core\Annotation\Plugin;
-use Drupal\Core\Annotation\Translation;
 
 /**
  * Implements hook_entity_info_alter().
@@ -303,13 +301,13 @@ function profile2_user_view($account, $view_mode, $langcode) {
 
     if ($profile = reset($profiles)) {
       if ($profile->access('view')) {
+        entity_render_controller('profile2')->buildContent(array($profile), 'account');
         $account->content['profile_' . $id] = array(
-          '#type' => 'user_profile_category',
+          '#theme' => 'profile2',
           '#title' => $profile->label(),
           '#prefix' => '<a id="profile-' . $profile->bundle() . '"></a>',
-        );
-        entity_render_controller('profile2')->buildContent(array($profile), 'account');
-        $account->content['profile_' . $id]['view'] = $profile->content;
+          '#profile' => $profile,
+        ) + $profile->content;
       }
     }
   }
@@ -501,6 +499,59 @@ function profile2_theme() {
       'template' => 'profile2',
     ),
   );
+}
+
+/**
+ * Processes variables for profile2.tpl.php.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An array of elements to display in view mode.
+ *   - profile: The profile object.
+ *   - view_mode: View mode; e.g., 'full', 'account'...
+ *
+ * @see profile2.tpl.php
+ */
+function template_preprocess_profile2(&$variables) {
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  $variables['profile'] = $variables['elements']['#profile'];
+  $profile = $variables['profile'];
+
+  $variables['name'] = theme('username', array(
+    'account' => $profile,
+    'link_attributes' => array('rel' => 'author'),
+  ));
+
+  $uri = $profile->uri();
+  $variables['url'] = url($uri['path'], $uri['options']);
+  $variables['title'] = check_plain($profile->label());
+  $variables['page'] = $variables['view_mode'] == 'full';
+  $variables['type'] = $profile->bundle();
+
+  // Helpful $content variable for templates.
+  $variables += array('content' => array());
+  foreach (element_children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+
+  // Make the field variables available with the appropriate language.
+  field_attach_preprocess('profile2', $profile, $variables['content'], $variables);
+
+  // Add article ARIA role.
+  $variables['attributes']['role'] = 'article';
+
+  // Gather template classes.
+  $variables['attributes']['class'][] = 'profile';
+  $variables['attributes']['class'][] = drupal_html_class('profile-' . $profile->bundle());
+  if ($variables['view_mode']) {
+    $variables['attributes']['class'][] = drupal_html_class('view-mode-' . $variables['view_mode']);
+  }
+  if (isset($variables['preview'])) {
+    $variables['attributes']['class'][] = 'preview';
+  }
+
+  $variables['theme_hook_suggestions'][] = 'profile2__' . $profile->bundle();
+  $variables['theme_hook_suggestions'][] = 'profile2__' . $profile->uid;
 }
 
 /**
