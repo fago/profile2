@@ -20,6 +20,7 @@ use Drupal\Core\Annotation\Translation;
  *   label = @Translation("Profile"),
  *   module = "profile2",
  *   controller_class = "Drupal\profile2\ProfileStorageController",
+ *   access_controller_class = "Drupal\profile2\ProfileAccessController",
  *   form_controller_class = {
  *     "default" = "Drupal\profile2\ProfileFormController"
  *   },

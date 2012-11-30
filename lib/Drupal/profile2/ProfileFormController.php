@@ -20,7 +20,7 @@ class ProfileFormController extends EntityFormController {
   protected function actionsElement(array $form, array &$form_state) {
     $element = parent::actionsElement($form, $form_state);
 
-    if (!profile2_access('delete', $this->getEntity($form_state))) {
+    if (!$this->getEntity($form_state)->access('delete')) {
       unset($element['delete']);
     }
 
