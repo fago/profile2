@@ -7,13 +7,13 @@
 
 namespace Drupal\profile2;
 
+use Drupal\Core\Config\Entity\ConfigEntityListController;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityListController;
 
 /**
  * List controller for profile types.
  */
-class ProfileTypeListController extends EntityListController {
+class ProfileTypeListController extends ConfigEntityListController {
 
   /**
    * Overrides EntityListController::getOperations().
