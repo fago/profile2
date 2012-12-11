@@ -113,29 +113,6 @@ class ProfileEditTest extends WebTestBase {
   }
 
   /**
-   * Test registration integration.
-   */
-  function testRegistrationIntegration() {
-    // Allow registration by site visitors without administrator approval.
-    config('user.settings')->set('register', USER_REGISTER_VISITORS)->save();
-    $edit = array();
-    $edit['name'] = $name = $this->randomName();
-    $edit['mail'] = $mail = $edit['name'] . '@example.com';
-    $edit['profile_test[profile_fullname][und][0][value]'] = $this->randomName();
-    $this->drupalPost('user/register', $edit, t('Create new account'));
-    $this->assertText(t('A welcome message with further instructions has been sent to your e-mail address.'), t('User registered successfully.'));
-    $new_user = user_load_by_name($name);
-    $this->assertTrue((bool) $new_user->status, t('New account is active after registration.'));
-
-    $profiles = entity_load_multiple_by_properties('profile2', array(
-      'uid' => $new_user->uid,
-      'type' => 'test',
-    ));
-    $profile = reset($profiles);
-    $this->assertEqual($profile->profile_fullname[LANGUAGE_NOT_SPECIFIED][0]['value'], $edit['profile_test[profile_fullname][und][0][value]'], 'Profile created.');
-  }
-
-  /**
    * Test basic edit and display.
    */
   function testEditAndDisplay() {

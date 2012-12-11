@@ -145,10 +145,15 @@ function profile2_menu() {
 // @see http://drupal.org/node/1863502
 //function profile2_menu_load($type_id, User $account, $op = '') {
 function profile2_menu_load($type_id, $map, $op = '') {
-  if (!isset($map[1]) || !($map[1] instanceof User)) {
-    return FALSE;
+  if (is_array($map)) {
+    if (!isset($map[1]) || !($map[1] instanceof User)) {
+      return FALSE;
+    }
+    $account = $map[1];
   }
-  $account = $map[1];
+  else {
+    $account = $map;
+  }
   if ($type_id === '' || !$account->id()) {
     return FALSE;
   }
@@ -304,19 +309,23 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
   foreach (entity_load_multiple('profile2_type') as $id => $type) {
     if ($type->get('registration')) {
       if (empty($form_state['profiles'][$id])) {
-        $form_state['profiles'][$id] = entity_create('profile2', array('type' => $id));
+        $form_state['profiles'][$id] = entity_create('profile2', array(
+          'type' => $id,
+        ));
       }
       profile2_attach_form($form, $form_state);
 
       // Wrap each profile form in a fieldset.
-      $form['profile_' . $id] += array(
+      $form['profile'][$id] += array(
         '#type' => 'fieldset',
         '#title' => check_plain($type->label()),
       );
     }
   }
-  $form['#validate'][] = 'profile2_user_form_validate';
-  $form['actions']['submit']['#submit'][] = 'profile2_user_form_submit';
+  if (!empty($form_state['profiles'])) {
+    $form['#validate'][] = 'profile2_user_form_validate';
+    $form['actions']['submit']['#submit'][] = 'profile2_user_form_submit';
+  }
 }
 
 /**
@@ -336,13 +345,13 @@ function profile2_form_user_register_form_alter(&$form, &$form_state) {
  */
 function profile2_attach_form(&$form, &$form_state) {
   foreach ($form_state['profiles'] as $bundle => $profile) {
-    $form['profile_' . $bundle]['#tree'] = TRUE;
-    $form['profile_' . $bundle]['#parents'] = array('profile_' . $bundle);
+    $form['profile'][$bundle]['#tree'] = TRUE;
+    $form['profile'][$bundle]['#parents'] = array('profile', $bundle);
 
-    field_attach_form('profile2', $profile, $form['profile_' . $bundle], $form_state);
+    field_attach_form('profile2', $profile, $form['profile'][$bundle], $form_state);
 
     if (count(field_info_instances('profile2', $bundle)) == 0) {
-      $form['profile_' . $bundle]['message'] = array(
+      $form['profile'][$bundle]['message'] = array(
         '#access' => user_access('administer profile types'),
         '#markup' => t('No fields have been associated with this profile type. Go to the <a href="!url">Profile types</a> page to add some fields.', array('!url' => url('admin/people/profiles'))),
       );
@@ -354,7 +363,7 @@ function profile2_attach_form(&$form, &$form_state) {
       $hooks = array();
       $hooks[] = 'form_' . $bundle . '_profile2_form';
       $hooks[] = 'form_profile2_form';
-      drupal_alter($hooks, $form['profile_' . $bundle], $form_state);
+      drupal_alter($hooks, $form['profile'][$bundle], $form_state);
     }
   }
 }
@@ -366,10 +375,12 @@ function profile2_attach_form(&$form, &$form_state) {
  */
 function profile2_user_form_validate(&$form, &$form_state) {
   foreach ($form_state['profiles'] as $bundle => $profile) {
-    if (isset($form_state['values']['profile_' . $bundle])) {
+    if (isset($form_state['values']['profile'][$bundle])) {
       // @see entity_form_field_validate()
-      $pseudo_entity = entity_create('profile2', array_merge($form_state['values']['profile_' . $bundle], array('type' => $bundle)));
-      field_attach_form_validate('profile2', $pseudo_entity, $form['profile_' . $bundle], $form_state);
+      $pseudo_entity = entity_create('profile2', array_merge($form_state['values']['profile'][$bundle], array(
+        'type' => $bundle,
+      )));
+      field_attach_form_validate('profile2', $pseudo_entity, $form['profile'][$bundle], $form_state);
     }
   }
 }
@@ -399,12 +410,12 @@ function profile2_user_form_submit(&$form, &$form_state) {
 function profile2_form_submit_build_profile(&$form, &$form_state) {
   foreach ($form_state['profiles'] as $bundle => $profile) {
     // @see entity_form_submit_build_entity()
-    if (isset($form['profile_' . $bundle]['#entity_builders'])) {
-      foreach ($form['profile_' . $bundle]['#entity_builders'] as $function) {
-        $function('profile2', $profile, $form['profile_' . $bundle], $form_state);
+    if (isset($form['profile'][$bundle]['#entity_builders'])) {
+      foreach ($form['profile'][$bundle]['#entity_builders'] as $function) {
+        $function('profile2', $profile, $form['profile'][$bundle], $form_state);
       }
     }
-    field_attach_submit('profile2', $profile, $form['profile_' . $bundle], $form_state);
+    field_attach_submit('profile2', $profile, $form['profile'][$bundle], $form_state);
   }
 }
 
