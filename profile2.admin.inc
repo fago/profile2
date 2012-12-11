@@ -8,6 +8,14 @@
 use Drupal\profile2\Plugin\Core\Entity\ProfileType;
 
 /**
+ * Page callback; Lists available ProfileType objects.
+ */
+function profile2_type_list_page() {
+  $controller = entity_list_controller('profile2_type');
+  return $controller->render();
+}
+
+/**
  * Page callback: Presents the form for creating a profile type.
  *
  * @return array
@@ -43,7 +51,7 @@ function profile2_type_delete_form($form, &$form_state, ProfileType $type) {
 
   $form['id'] = array('#type' => 'value', '#value' => $type->id());
   return confirm_form($form,
-    t('Are you sure you want to delete %label', array('%label' => $type->label())),
+    t('Are you sure you want to delete %label and all of its associated profiles?', array('%label' => $type->label())),
     'admin/people/profiles',
     NULL,
     t('Delete')
@@ -55,5 +63,8 @@ function profile2_type_delete_form($form, &$form_state, ProfileType $type) {
  */
 function profile2_type_delete_form_submit($form, &$form_state) {
   $form_state['profile2_type']->delete();
+  drupal_set_message(t('The profile type %label has been deleted.', array(
+    '%label' => $form_state['profile2_type']->label(),
+  )));
   $form_state['redirect'] = 'admin/people/profiles';
 }

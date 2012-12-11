@@ -113,6 +113,8 @@ class Profile extends Entity implements ContentEntityInterface {
    * Overrides Entity::label().
    */
   public function label($langcode = NULL) {
+    // If this profile has a custom label, use it. Otherwise, use the label of
+    // the profile type.
     if (isset($this->label) && $this->label !== '') {
       return $this->label;
     }

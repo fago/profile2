@@ -37,6 +37,13 @@ function profile2_schema() {
         'default' => NULL,
         'description' => "The {users}.uid of the associated user.",
       ),
+      'langcode' => array(
+        'description' => 'The {language}.langcode of this profile.',
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+      ),
       'label' => array(
         'description' => 'A human-readable label for this profile.',
         'type' => 'varchar',

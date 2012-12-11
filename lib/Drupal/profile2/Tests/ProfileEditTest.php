@@ -104,7 +104,7 @@ class ProfileEditTest extends WebTestBase {
     $this->assertEqual($profiles['test2']->pid, $profiles2['test2']->pid, 'Profile successfully updated.');
 
     // Delete a profile type.
-    profile2_type_load('test')->delete();
+    entity_load('profile2_type', 'test')->delete();
 
     // Try deleting multiple profiles by deleting all existing profiles.
     $pids = array_keys(entity_load_multiple('profile2'));

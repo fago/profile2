@@ -15,15 +15,11 @@ use Drupal\Core\Entity\EntityFormController;
 class ProfileFormController extends EntityFormController {
 
   /**
-   * Overrides EntityFormController::actionsElement().
+   * Overrides EntityFormController::actions().
    */
-  protected function actionsElement(array $form, array &$form_state) {
-    $element = parent::actionsElement($form, $form_state);
-
-    if (!$this->getEntity($form_state)->access('delete')) {
-      unset($element['delete']);
-    }
-
+  protected function actions(array $form, array &$form_state) {
+    $element = parent::actions($form, $form_state);
+    $element['delete']['#access'] = $this->getEntity($form_state)->access('delete');
     return $element;
   }
 

@@ -153,9 +153,7 @@ class ProfileCRUDTest extends DrupalUnitTestBase {
       $user2_profile1->id() => $user2_profile1,
     ));
 
-    // @todo
-    // Rename a profile type and verify that existing profiles are updated.
-    // Verify expected behavior of 'uid' => NULL; Profile2 supported this for whatever reason.
+    // @todo Rename a profile type; verify that existing profiles are updated.
   }
 
 }

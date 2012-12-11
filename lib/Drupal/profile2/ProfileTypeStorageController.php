@@ -33,6 +33,8 @@ class ProfileTypeStorageController extends ConfigStorageController {
    * Overrides ConfigStorageController::preDelete().
    */
   protected function preDelete($entities) {
+    parent::preDelete($entities);
+
     // Delete all profiles of this type.
     if ($profiles = entity_load_multiple_by_properties('profile2', array('type' => array_keys($entities)))) {
       entity_get_controller('profile2')->delete($profiles);

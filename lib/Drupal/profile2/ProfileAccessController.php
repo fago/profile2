@@ -7,9 +7,9 @@
 
 namespace Drupal\profile2;
 
-use Drupal\user\Plugin\Core\Entity\User;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityAccessControllerInterface;
+use Drupal\user\Plugin\Core\Entity\User;
 
 /**
  * Access controller for profiles.
@@ -27,7 +27,7 @@ class ProfileAccessController implements EntityAccessControllerInterface {
    * Implements EntityAccessControllerInterface::viewAccess().
    */
   public function viewAccess(EntityInterface $profile, $langcode = LANGUAGE_DEFAULT, User $account = NULL) {
-    return $this->access($profile, 'view', $account);
+    return $this->access($profile, 'view', $langcode, $account);
   }
 
   /**
@@ -35,7 +35,7 @@ class ProfileAccessController implements EntityAccessControllerInterface {
    */
   public function createAccess(EntityInterface $profile, $langcode = LANGUAGE_DEFAULT, User $account = NULL) {
     // Map to 'edit' access.
-    return $this->editAccess($profile, $langcode, $account);
+    return $this->access($profile, 'edit', $langcode, $account);
   }
 
   /**
@@ -43,86 +43,72 @@ class ProfileAccessController implements EntityAccessControllerInterface {
    */
   public function updateAccess(EntityInterface $profile, $langcode = LANGUAGE_DEFAULT, User $account = NULL) {
     // Map to 'edit' access.
-    return $this->editAccess($profile, $langcode, $account);
+    return $this->access($profile, 'edit', $langcode, $account);
   }
 
   /**
    * Implements EntityAccessControllerInterface::deleteAccess().
    */
   public function deleteAccess(EntityInterface $profile, $langcode = LANGUAGE_DEFAULT, User $account = NULL) {
-    return $this->access($profile, 'delete', $account);
-  }
-
-  /**
-   * Checks 'edit' access for a profile.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $profile
-   *   The profile for which to check 'edit' access.
-   * @param string $langcode
-   *   (optional) The language code for which to check access. Defaults to
-   *   LANGUAGE_DEFAULT.
-   * @param \Drupal\user\Plugin\Core\Entity\User $account
-   *   (optional) The user for which to check access, or NULL to check access
-   *   for the current user. Defaults to NULL.
-   *
-   * @return bool
-   *   TRUE if access was granted, FALSE otherwise.
-   */
-  public function editAccess(EntityInterface $profile, $langcode = LANGUAGE_DEFAULT, User $account = NULL) {
-    return $this->access($profile, 'edit', $account);
+    return $this->access($profile, 'delete', $langcode, $account);
   }
 
   /**
    * Determines whether the given user has access to a profile.
    *
    * @param \Drupal\Core\Entity\EntityInterface $profile
-   *   (optional) A profile to check access for. If nothing is given, access for
-   *   all profiles is determined.
+   *   A profile to check access for.
    * @param string $operation
-   *   The operation being performed. One of 'view', 'update', 'create',
-   *   'delete' or just 'edit' (being the same as 'create' or 'update').
+   *   The operation being performed. One of 'view', 'create', 'update', or
+   *   'delete'.
+   * @param string $langcode
+   *   The language code for which to check access.
    * @param \Drupal\user\Plugin\Core\Entity\User $account
-   *   The user to check for. Leave it to NULL to check for the global user.
-   * @return boolean
-   *   TRUE if access was granted, FALSE otherwise.
+   *   (optional) The user to check for. Omit to check access for the global
+   *   user.
+   *
+   * @return bool
+   *   TRUE if access is allowed, FALSE otherwise.
    *
    * @see hook_profile2_access()
    * @see profile2_profile2_access()
    */
-  protected function access(EntityInterface $profile, $operation, User $account = NULL) {
+  protected function access(EntityInterface $profile, $operation, $langcode, User $account = NULL) {
     if (!isset($account)) {
       $account = entity_load('user', $GLOBALS['user']->uid);
     }
-
-    // Try to retrieve from cache first.
-    $pid = $profile->id();
-    $uid = $account->id();
-    if (isset($this->accessCache[$uid][$operation][$pid])) {
-      return $this->accessCache[$uid][$operation][$pid];
-    }
-
-    // Administrators can access any profile.
-    if (user_access('administer profiles', $account)) {
-      $this->accessCache[$uid][$operation][$pid] = TRUE;
+    // Check for the bypass access permission first. No need to cache this,
+    // since user_access() is cached already.
+    if (user_access('bypass profile access', $account)) {
       return TRUE;
     }
 
+    // For existing profiles, check access for the particular profile ID. When
+    // creating a new profile, check access for the profile's bundle.
+    $pid = $profile->id() ?: $profile->bundle();
+
+    $uid = $account->id();
+    if (isset($this->accessCache[$uid][$operation][$pid][$langcode])) {
+      return $this->accessCache[$uid][$operation][$pid][$langcode];
+    }
+
     $access = NULL;
-    // Allow modules to grant / deny access.
+    // Ask modules to grant or deny access.
     foreach (module_implements('profile2_access', $operation, $profile, $account) as $module) {
       $return = module_invoke($module, 'profile2_access', $operation, $profile, $account);
+      // If a module denies access, there's no point in asking further.
       if ($return === FALSE) {
-        // Directly return FALSE if a module denies access.
-        $this->accessCache[$uid][$operation][$pid] = FALSE;
-        return FALSE;
+        $access = $return;
+        break;
       }
+      // A module may grant access, but others may still deny.
       if ($return === TRUE) {
         $access = TRUE;
       }
     }
+    $this->accessCache[$uid][$operation][$pid][$langcode] = ($access === TRUE);
 
-    $this->accessCache[$uid][$operation][$pid] = $access === TRUE ?: FALSE;
-    return $this->accessCache[$uid][$operation][$pid];
+    return $this->accessCache[$uid][$operation][$pid][$langcode];
   }
 
 }
