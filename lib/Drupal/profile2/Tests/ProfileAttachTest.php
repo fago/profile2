@@ -48,7 +48,6 @@ class ProfileAttachTest extends WebTestBase {
       'bundle' => $this->type->id(),
       'label' => 'Full name',
       'required' => TRUE,
-      'description' => 'Specify your first and last name.',
       'widget' => array(
         'type' => 'text_textfield',
       ),

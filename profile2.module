@@ -161,7 +161,8 @@ function profile2_menu_load($type_id, $map, $op = '') {
     'uid' => $account->id(),
     'type' => $type_id,
   ));
-  if ($op == 'edit' && !$profile = reset($profiles)) {
+  $profile = reset($profiles);
+  if ($op == 'edit' && !$profile) {
     $profile = entity_create('profile2', array(
       'type' => $type_id,
       'uid' => $account->id(),
