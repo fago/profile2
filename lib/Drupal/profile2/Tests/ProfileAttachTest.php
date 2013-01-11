@@ -41,7 +41,7 @@ class ProfileAttachTest extends WebTestBase {
       'cardinality' => 1,
       'translatable' => FALSE,
     );
-    field_create_field($this->field);
+    $this->field = field_create_field($this->field);
     $this->instance = array(
       'entity_type' => 'profile2',
       'field_name' => $this->field['field_name'],
@@ -52,7 +52,12 @@ class ProfileAttachTest extends WebTestBase {
         'type' => 'text_textfield',
       ),
     );
-    field_create_instance($this->instance);
+    $this->instance = field_create_instance($this->instance);
+    $this->display = entity_get_display('profile2', 'test', 'default')
+      ->setComponent($this->field['field_name'], array(
+        'type' => 'text_default',
+      ));
+    $this->display->save();
 
     $this->checkPermissions(array(), TRUE);
   }

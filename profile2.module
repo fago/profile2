@@ -75,6 +75,8 @@ function profile2_menu() {
   );
   $items['admin/people/profiles/manage/%profile2_type'] = array(
     'title' => 'Edit profile type',
+    'title callback' => 'entity_page_label',
+    'title arguments' => array(4),
     'page callback' => 'profile2_type_edit',
     'page arguments' => array(4),
     'access arguments' => array('administer profile types'),
@@ -100,7 +102,7 @@ function profile2_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
   );
-  $items['user/%user/edit/%profile2_menu'] = array(
+  $items['user/%user/edit/%profile2_menu_arg'] = array(
     // @see http://drupal.org/node/1863502
     'load arguments' => array(1, 'edit'),
     'load arguments' => array('%map', 'edit'),
@@ -113,7 +115,7 @@ function profile2_menu() {
     'page arguments' => array(3),
     'type' => MENU_LOCAL_TASK,
   );
-  $items['user/%user/edit/%profile2_menu/delete'] = array(
+  $items['user/%user/edit/%profile2_menu_arg/delete'] = array(
     // @see http://drupal.org/node/1863502
     'load arguments' => array(1, 'delete'),
     'load arguments' => array('%map', 'delete'),
@@ -143,8 +145,8 @@ function profile2_menu() {
  *   The profile of type $type_id of the user account, or FALSE.
  */
 // @see http://drupal.org/node/1863502
-//function profile2_menu_load($type_id, User $account, $op = '') {
-function profile2_menu_load($type_id, $map, $op = '') {
+//function profile2_menu_arg_load($type_id, User $account, $op = '') {
+function profile2_menu_arg_load($type_id, $map, $op = '') {
   if (is_array($map)) {
     if (!isset($map[1]) || !($map[1] instanceof User)) {
       return FALSE;
@@ -288,16 +290,13 @@ function profile2_user_view($account, $view_mode, $langcode) {
       'uid' => $account->id(),
       'type' => $id,
     ));
-
-    if ($profile = reset($profiles)) {
+    foreach ($profiles as $profile) {
       if ($profile->access('view')) {
-        entity_render_controller('profile2')->buildContent(array($profile), 'account');
-        $account->content['profile_' . $id] = array(
-          '#theme' => 'profile2',
-          '#title' => $profile->label(),
+        $build = entity_render_controller('profile2')->view($profile, 'account');
+        $build += array(
           '#prefix' => '<a id="profile-' . $profile->bundle() . '"></a>',
-          '#profile' => $profile,
-        ) + $profile->content;
+        );
+        $account->content['profile'][$id][$profile->id()] = $build;
       }
     }
   }
@@ -349,7 +348,7 @@ function profile2_attach_form(&$form, &$form_state) {
     $form['profile'][$bundle]['#tree'] = TRUE;
     $form['profile'][$bundle]['#parents'] = array('profile', $bundle);
 
-    field_attach_form('profile2', $profile, $form['profile'][$bundle], $form_state);
+    field_attach_form($profile, $form['profile'][$bundle], $form_state);
 
     if (count(field_info_instances('profile2', $bundle)) == 0) {
       $form['profile'][$bundle]['message'] = array(
@@ -381,7 +380,7 @@ function profile2_user_form_validate(&$form, &$form_state) {
       $pseudo_entity = entity_create('profile2', array_merge($form_state['values']['profile'][$bundle], array(
         'type' => $bundle,
       )));
-      field_attach_form_validate('profile2', $pseudo_entity, $form['profile'][$bundle], $form_state);
+      field_attach_form_validate($pseudo_entity, $form['profile'][$bundle], $form_state);
     }
   }
 }
@@ -416,7 +415,7 @@ function profile2_form_submit_build_profile(&$form, &$form_state) {
         $function('profile2', $profile, $form['profile'][$bundle], $form_state);
       }
     }
-    field_attach_submit('profile2', $profile, $form['profile'][$bundle], $form_state);
+    field_attach_submit($profile, $form['profile'][$bundle], $form_state);
   }
 }
 
@@ -468,7 +467,7 @@ function profile2_theme() {
  */
 function template_preprocess_profile2(&$variables) {
   $variables['view_mode'] = $variables['elements']['#view_mode'];
-  $variables['profile'] = $variables['elements']['#profile'];
+  $variables['profile'] = $variables['elements']['#profile2'];
   $profile = $variables['profile'];
 
   $variables['name'] = theme('username', array(
@@ -489,7 +488,7 @@ function template_preprocess_profile2(&$variables) {
   }
 
   // Make the field variables available with the appropriate language.
-  field_attach_preprocess('profile2', $profile, $variables['content'], $variables);
+  field_attach_preprocess($profile, $variables['content'], $variables);
 
   // Add article ARIA role.
   $variables['attributes']['role'] = 'article';
