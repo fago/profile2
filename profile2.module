@@ -309,7 +309,7 @@ function profile2_user_view($account, $view_mode, $langcode) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() for the registration form.
+ * Implements hook_form_FORM_ID_alter() for user_register_form().
  */
 function profile2_form_user_register_form_alter(&$form, &$form_state) {
   foreach (entity_load_multiple('profile2_type') as $id => $type) {
