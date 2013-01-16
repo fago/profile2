@@ -16,11 +16,13 @@ function profile2_entity_info(&$info) {
   $config_names = config_get_storage_names_with_prefix('profile2.type.');
   foreach ($config_names as $config_name) {
     $config = config($config_name);
-    $info['profile2']['bundles'][$config->get('id')] = array(
-      'label' => $config->get('label'),
+    $id = $config->get('id');
+    $label = $config->get('label');
+    $info['profile2']['bundles'][$id] = array(
+      'label' => $label,
       'admin' => array(
         'path' => 'admin/people/profiles/manage/%profile2_type',
-        'real path' => 'admin/people/profiles/manage/' . $config->get('id'),
+        'real path' => 'admin/people/profiles/manage/' . $id,
         'bundle argument' => 4,
         'access arguments' => array('administer profile types'),
       ),
