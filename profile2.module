@@ -285,6 +285,10 @@ function profile2_user_predelete($account) {
  * Implements hook_user_view().
  */
 function profile2_user_view($account, $view_mode, $langcode) {
+  // Only attach profiles for the account view.
+  if ($view_mode != 'account') {
+    return;
+  }
   foreach (entity_load_multiple('profile2_type') as $id => $type) {
     $profiles = entity_load_multiple_by_properties('profile2', array(
       'uid' => $account->id(),
