@@ -95,9 +95,9 @@ class ProfileAccessController implements EntityAccessControllerInterface {
     // Ask modules to grant or deny access.
     foreach (module_implements('profile2_access', $operation, $profile, $account) as $module) {
       $return = module_invoke($module, 'profile2_access', $operation, $profile, $account);
-      // If a module denies access, there's no point in asking further.
+      // If a module denies access, there is no point in asking further.
       if ($return === FALSE) {
-        $access = $return;
+        $access = FALSE;
         break;
       }
       // A module may grant access, but others may still deny.
@@ -105,6 +105,10 @@ class ProfileAccessController implements EntityAccessControllerInterface {
         $access = TRUE;
       }
     }
+    // Final access is only TRUE if any module explicitly returned TRUE. If at
+    // least one returned FALSE, $access will be FALSE. If no module returned
+    // anything, $access will be NULL, which means access is denied.
+    // @see hook_profile2_access()
     $this->accessCache[$uid][$operation][$pid][$langcode] = ($access === TRUE);
 
     return $this->accessCache[$uid][$operation][$pid][$langcode];
