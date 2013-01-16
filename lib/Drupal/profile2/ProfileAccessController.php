@@ -82,12 +82,11 @@ class ProfileAccessController implements EntityAccessControllerInterface {
     if (user_access('bypass profile access', $account)) {
       return TRUE;
     }
-
+    $uid = $account->id();
     // For existing profiles, check access for the particular profile ID. When
     // creating a new profile, check access for the profile's bundle.
     $pid = $profile->id() ?: $profile->bundle();
 
-    $uid = $account->id();
     if (isset($this->accessCache[$uid][$operation][$pid][$langcode])) {
       return $this->accessCache[$uid][$operation][$pid][$langcode];
     }
