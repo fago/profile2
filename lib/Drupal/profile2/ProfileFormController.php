@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\profile2\ProfileFormController.
+ * Contains \Drupal\profile2\ProfileFormController.
  */
 
 namespace Drupal\profile2;

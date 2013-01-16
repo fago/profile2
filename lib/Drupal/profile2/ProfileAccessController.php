@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\profile2\ProfileAccessController.
+ * Contains \Drupal\profile2\ProfileAccessController.
  */
 
 namespace Drupal\profile2;

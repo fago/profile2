@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\profile2\Plugin\Core\Entity\ProfileType.
+ * Contains \Drupal\profile2\Plugin\Core\Entity\ProfileType.
  */
 
 namespace Drupal\profile2\Plugin\Core\Entity;

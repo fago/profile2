@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\profile2\ProfileStorageController.
+ * Contains \Drupal\profile2\ProfileStorageController.
  */
 
 namespace Drupal\profile2;

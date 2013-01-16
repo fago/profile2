@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\profile2\ProfileTypeListController.
+ * Contains \Drupal\profile2\ProfileTypeListController.
  */
 
 namespace Drupal\profile2;
@@ -16,7 +16,7 @@ use Drupal\Core\Entity\EntityInterface;
 class ProfileTypeListController extends ConfigEntityListController {
 
   /**
-   * Overrides EntityListController::getOperations().
+   * Overrides \Drupal\Core\Entity\EntityListController::getOperations().
    */
   public function getOperations(EntityInterface $entity) {
     $operations = parent::getOperations($entity);

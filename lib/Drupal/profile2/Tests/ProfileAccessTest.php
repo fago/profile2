@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\profile2\Tests\ProfileAccessTest.
+ * Contains \Drupal\profile2\Tests\ProfileAccessTest.
  */
 
 namespace Drupal\profile2\Tests;
