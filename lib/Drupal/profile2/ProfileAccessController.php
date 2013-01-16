@@ -34,7 +34,7 @@ class ProfileAccessController implements EntityAccessControllerInterface {
    * Implements EntityAccessControllerInterface::createAccess().
    */
   public function createAccess(EntityInterface $profile, $langcode = LANGUAGE_DEFAULT, User $account = NULL) {
-    // Map to 'edit' access.
+    // Create and update operations are folded into edit access for profiles.
     return $this->access($profile, 'edit', $langcode, $account);
   }
 
@@ -42,7 +42,7 @@ class ProfileAccessController implements EntityAccessControllerInterface {
    * Implements EntityAccessControllerInterface::updateAccess().
    */
   public function updateAccess(EntityInterface $profile, $langcode = LANGUAGE_DEFAULT, User $account = NULL) {
-    // Map to 'edit' access.
+    // Create and update operations are folded into edit access for profiles.
     return $this->access($profile, 'edit', $langcode, $account);
   }
 
