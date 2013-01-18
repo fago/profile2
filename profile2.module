@@ -288,7 +288,7 @@ function profile2_user_predelete(User $account) {
  * Implements hook_user_view().
  */
 function profile2_user_view(User $account, EntityDisplay $display, $view_mode, $langcode) {
-  // Only attach profiles for the account view.
+  // Only attach profiles for the full account view.
   if ($view_mode != 'full') {
     return;
   }
