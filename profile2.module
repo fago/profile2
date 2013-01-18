@@ -5,6 +5,7 @@
  * Support for configurable user profiles.
  */
 
+use Drupal\entity\Plugin\Core\Entity\EntityDisplay;
 use Drupal\profile2\Plugin\Core\Entity\Profile;
 use Drupal\profile2\Plugin\Core\Entity\ProfileType;
 use Drupal\user\Plugin\Core\Entity\User;
@@ -277,7 +278,7 @@ function profile2_permission() {
 /**
  * Implements hook_user_predelete().
  */
-function profile2_user_predelete($account) {
+function profile2_user_predelete(User $account) {
   if ($profiles = entity_load_multiple_by_properties('profile2', array('uid' => $account->id()))) {
     entity_get_controller('profile2')->delete($profiles);
   }
@@ -286,9 +287,9 @@ function profile2_user_predelete($account) {
 /**
  * Implements hook_user_view().
  */
-function profile2_user_view($account, $view_mode, $langcode) {
+function profile2_user_view(User $account, EntityDisplay $display, $view_mode, $langcode) {
   // Only attach profiles for the account view.
-  if ($view_mode != 'account') {
+  if ($view_mode != 'full') {
     return;
   }
   foreach (entity_load_multiple('profile2_type') as $id => $type) {
@@ -539,15 +540,10 @@ function profile2_form_field_ui_field_settings_form_alter(&$form, &$form_state) 
 /**
  * Implements hook_field_access().
  */
-function profile2_field_access($op, $field, $entity_type, $profile = NULL, $account = NULL) {
+function profile2_field_access($op, $field, $entity_type, $profile, $account) {
   if ($entity_type == 'profile2' && $op == 'view' && !empty($field['settings']['profile2_private']) && !user_access('bypass profile access', $account)) {
-    // For profiles, deny general view access for private fields.
-    if (!isset($profile)) {
-      return FALSE;
-    }
-    // Also deny view access, if someone else views a private field.
-    $account = isset($account) ? $account : $GLOBALS['user'];
-    if ($account->uid != $profile->uid) {
+    // Deny view access, if someone else views a private field.
+    if ($account->id() != $profile->uid) {
       return FALSE;
     }
   }
