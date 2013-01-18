@@ -39,6 +39,8 @@ class ProfileFieldAccessTest extends WebTestBase {
     $this->admin_user = $this->drupalCreateUser(array(
       'access user profiles',
       'administer profile types',
+      'administer profile2 fields',
+      'administer profile2 display',
       'bypass profile access',
     ));
     $user_permissions = array(

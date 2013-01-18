@@ -542,8 +542,8 @@ function profile2_form_field_ui_field_settings_form_alter(&$form, &$form_state) 
  */
 function profile2_field_access($op, $field, $entity_type, $profile, $account) {
   if ($entity_type == 'profile2' && $op == 'view' && !empty($field['settings']['profile2_private']) && !user_access('bypass profile access', $account)) {
-    // Deny view access, if someone else views a private field.
-    if ($account->id() != $profile->uid) {
+    // Deny view access, if someone else views a private profile field.
+    if ($account->uid != $profile->uid) {
       return FALSE;
     }
   }
