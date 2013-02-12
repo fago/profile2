@@ -11,15 +11,16 @@ use Drupal\profile2\Plugin\Core\Entity\ProfileType;
 use Drupal\user\Plugin\Core\Entity\User;
 
 /**
- * Implements hook_entity_info().
+ * Implements hook_entity_bundle_info().
  */
-function profile2_entity_info(&$info) {
+function profile2_entity_bundle_info() {
+  $info = array();
   $config_names = config_get_storage_names_with_prefix('profile2.type.');
   foreach ($config_names as $config_name) {
     $config = config($config_name);
     $id = $config->get('id');
     $label = $config->get('label');
-    $info['profile2']['bundles'][$id] = array(
+    $info['profile2'][$id] = array(
       'label' => $label,
       'admin' => array(
         'path' => 'admin/people/profiles/manage/%profile2_type',
@@ -29,6 +30,7 @@ function profile2_entity_info(&$info) {
       ),
     );
   }
+  return $info;
 }
 
 /**
@@ -422,7 +424,7 @@ function profile2_form_submit_build_profile(&$form, &$form_state) {
         $function('profile2', $profile, $form['profile'][$bundle], $form_state);
       }
     }
-    field_attach_submit($profile, $form['profile'][$bundle], $form_state);
+    field_attach_extract_form_values($profile, $form['profile'][$bundle], $form_state);
   }
 }
 
