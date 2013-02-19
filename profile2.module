@@ -90,7 +90,6 @@ function profile2_menu() {
   $items['admin/people/profiles/manage/%profile2_type/edit'] = array(
     'title' => 'Edit',
     'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
   );
   $items['admin/people/profiles/manage/%profile2_type/delete'] = array(
     'title' => 'Delete',
@@ -105,7 +104,6 @@ function profile2_menu() {
   $items['user/%user/edit/account'] = array(
     'title' => 'Account',
     'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
   );
   $items['user/%user/edit/%profile2_menu_arg'] = array(
     // @see http://drupal.org/node/1863502
@@ -179,15 +177,15 @@ function profile2_menu_arg_load($type_id, $map, $op = '') {
 }
 
 /**
- * Implements hook_menu_local_tasks_alter().
+ * Implements hook_menu_local_tasks().
  */
-function profile2_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+function profile2_menu_local_tasks(&$data, $router_item, $root_path) {
   if ($root_path === 'user/%/edit' || $root_path === 'user/%/edit/%') {
-    $tabs = &$data['tabs'][1]['output'];
+    $tabs = &$data['tabs'][1];
     // Determine the currently selected tab, if any.
     $selected_index = -1;
     $selected_id = '';
-    foreach ($tabs as $index => &$tab) {
+    foreach ($tabs as $index => $tab) {
       if (isset($tab['#link']['path']) && $tab['#link']['path'] == 'user/%/edit/%') {
         $selected_index = $index;
         $selected_id = $router_item['original_map'][3];
@@ -211,13 +209,9 @@ function profile2_menu_local_tasks_alter(&$data, $router_item, $root_path) {
         '#theme' => 'menu_local_task',
         '#link' => array(
           'title' => $type->label(),
-          'href' => 'user/' . $router_item['original_map'][1] . '/edit/' . $type->id(),
-          'localized_options' => array('html' => FALSE),
+          'href' => $router_item['tab_root_href'] . '/edit/' . $type->id(),
         ),
       );
-    }
-    if ($types) {
-      $data['tabs'][1]['count']++;
     }
   }
 }
