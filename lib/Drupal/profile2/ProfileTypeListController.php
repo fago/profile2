@@ -43,18 +43,20 @@ class ProfileTypeListController extends ConfigEntityListController {
   public function getOperations(EntityInterface $entity) {
     $operations = parent::getOperations($entity);
     if (module_exists('field_ui')) {
+      // Unlike other bundle entities, the most common operation for profile
+      // types is to manage fields, so we suggest that as default operation.
       $uri = $entity->uri();
       $operations['manage-fields'] = array(
         'title' => t('Manage fields'),
         'href' => $uri['path'] . '/fields',
         'options' => $uri['options'],
-        'weight' => 11,
+        'weight' => 5,
       );
       $operations['manage-display'] = array(
         'title' => t('Manage display'),
         'href' => $uri['path'] . '/display',
         'options' => $uri['options'],
-        'weight' => 12,
+        'weight' => 6,
       );
     }
     return $operations;
