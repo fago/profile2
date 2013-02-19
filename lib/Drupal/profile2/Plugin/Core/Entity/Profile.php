@@ -24,6 +24,7 @@ use Drupal\Core\Annotation\Translation;
  *   form_controller_class = {
  *     "default" = "Drupal\profile2\ProfileFormController"
  *   },
+ *   render_controller_class = "Drupal\Core\Entity\EntityRenderController",
  *   base_table = "profile",
  *   uri_callback = "profile2_profile_uri",
  *   fieldable = TRUE,
