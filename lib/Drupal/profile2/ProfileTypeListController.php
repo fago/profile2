@@ -16,6 +16,28 @@ use Drupal\Core\Entity\EntityInterface;
 class ProfileTypeListController extends ConfigEntityListController {
 
   /**
+   * Overrides \Drupal\Core\Entity\EntityListController::buildHeader().
+   */
+  public function buildHeader() {
+    $row = parent::buildHeader();
+    $operations = array_pop($row);
+    $row['registration'] = t('Registration');
+    $row['operations'] = $operations;
+    return $row;
+  }
+
+  /**
+   * Overrides \Drupal\Core\Entity\EntityListController::buildRow().
+   */
+  public function buildRow(EntityInterface $entity) {
+    $row = parent::buildRow($entity);
+    $operations = array_pop($row);
+    $row['registration'] = $entity->get('registration') ? t('Yes') : t('No');
+    $row['operations'] = $operations;
+    return $row;
+  }
+
+  /**
    * Overrides \Drupal\Core\Entity\EntityListController::getOperations().
    */
   public function getOperations(EntityInterface $entity) {
