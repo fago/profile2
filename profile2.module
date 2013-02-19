@@ -97,6 +97,7 @@ function profile2_menu() {
     'page arguments' => array('profile2_type_delete_form', 4),
     'access arguments' => array('administer profile types'),
     'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
     'file' => 'profile2.admin.inc',
   );
 
