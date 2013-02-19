@@ -22,6 +22,7 @@ function profile2_type_list_page() {
  *   A form array as expected by drupal_render().
  */
 function profile2_type_add() {
+  drupal_set_title(t('Add profile type'));
   $type = entity_create('profile2_type', array());
   return entity_get_form($type);
 }

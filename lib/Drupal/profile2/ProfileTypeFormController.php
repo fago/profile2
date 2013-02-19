@@ -44,6 +44,19 @@ class ProfileTypeFormController extends EntityFormController {
   }
 
   /**
+   * Overrides EntityFormController::actions().
+   */
+  protected function actions(array $form, array &$form_state) {
+    $actions = parent::actions($form, $form_state);
+    if (module_exists('field_ui') && $this->getEntity($form_state)->isNew()) {
+      $actions['save_continue'] = $actions['submit'];
+      $actions['save_continue']['#value'] = t('Save and manage fields');
+      $actions['save_continue']['#submit'][] = array($this, 'redirectToFieldUI');
+    }
+    return $actions;
+  }
+
+  /**
    * Overrides EntityFormController::save().
    */
   public function save(array $form, array &$form_state) {
@@ -60,10 +73,19 @@ class ProfileTypeFormController extends EntityFormController {
   }
 
   /**
+   * Form submission handler to redirect to Manage fields page of Field UI.
+   */
+  public function redirectToFieldUI(array $form, array &$form_state) {
+    $type = $this->getEntity($form_state);
+    $form_state['redirect'] = field_ui_bundle_admin_path('profile2', $type->id()) . '/fields';
+  }
+
+  /**
    * Overrides EntityFormController::delete().
    */
   public function delete(array $form, array &$form_state) {
     $type = $this->getEntity($form_state);
     $form_state['redirect'] = 'admin/people/profiles/manage/' . $type->id() . '/delete';
   }
+
 }
