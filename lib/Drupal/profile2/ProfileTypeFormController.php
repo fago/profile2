@@ -37,7 +37,7 @@ class ProfileTypeFormController extends EntityFormController {
     );
     $form['registration'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Show during user account registration.'),
+      '#title' => t('Include in user registration form'),
       '#default_value' => $type->get('registration'),
     );
     return $form;
