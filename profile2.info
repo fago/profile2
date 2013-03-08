@@ -1,8 +1,0 @@
-name = Profile
-description = Provides configurable user profiles.
-package = Core
-core = 8.x
-version = VERSION
-configure = admin/people/profiles
-dependencies[] = user
-dependencies[] = field
