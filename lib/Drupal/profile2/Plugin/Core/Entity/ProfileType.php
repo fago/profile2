@@ -7,7 +7,7 @@
 
 namespace Drupal\profile2\Plugin\Core\Entity;
 
-use Drupal\Core\Annotation\Plugin;
+use Drupal\Component\Annotation\Plugin;
 use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 
