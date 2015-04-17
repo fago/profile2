@@ -1,0 +1,6 @@
+services:
+  profile.profile_access_checker:
+    class: Drupal\profile\Access\ProfileAccessCheck
+    arguments: ['@entity.manager', '@request_stack']
+    tags:
+      - { name: access_check, applies_to: _profile_access_check }

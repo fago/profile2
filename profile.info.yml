@@ -1,0 +1,11 @@
+name: Profile
+type: module
+description: 'Provides configurable user profiles.'
+package: Core
+core: 8.x
+version: VERSION
+configure: profile.overview_types
+dependencies:
+  - user
+  - field
+  - entity_reference

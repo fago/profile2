@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a user profile entity.
+ *
+ * @todo Document the available variables.
+ */
+#}
+
+{% if items %}
+	<h3 class="profile-title">{{ title }}</h3>
+	{% for i, item in items %}
+	    <div class="profile-item">
+	        <span class="profile-item-action-links">
+	            {% if edit_links[i] is defined %}[ {{ edit_links[i] }} ] &nbsp;{% endif %}{% if delete_links[i] is defined %} [ {{ delete_links[i] }} ]{% endif %}
+	        </span>
+	        {{ item }}
+	    </div>
+	{% endfor %}
+{% endif %}

@@ -1,0 +1,82 @@
+profile.overview_profiles:
+  path: '/admin/config/people/profiles'
+  defaults:
+    _title: 'Profiles'
+  requirements:
+    _permission: 'administer profiles'
+
+profile.overview_types:
+  path: '/admin/config/people/profiles/types'
+  defaults:
+    _entity_list: 'profile_type'
+    _title: 'Profile types'
+  requirements:
+    _permission: 'administer profile types'
+
+entity.profile_type.add_form:
+  path: '/admin/config/people/profiles/types/add'
+  defaults:
+    _entity_form: 'profile_type.add'
+    _title: 'Add'
+  requirements:
+    _permission: 'administer profile types'
+
+entity.profile_type.edit_form:
+  path: '/admin/config/people/profiles/types/manage/{profile_type}'
+  defaults:
+    _entity_form: 'profile_type.edit'
+    _title: 'Edit'
+  requirements:
+    _permission: 'administer profile types'
+
+entity.profile_type.delete_form:
+  path: '/admin/config/people/profiles/types/manage/{profile_type}/delete'
+  defaults:
+    _entity_form: 'profile_type.delete'
+    _title: 'Delete'
+  requirements:
+    _permission: 'administer profile types'
+
+entity.profile.add_form:
+  path: '/user/{user}/edit/profile/{profile_type}'
+  defaults:
+    _controller: '\Drupal\profile\Controller\ProfileController::addProfile'
+    _title: 'Add new profile'
+    operation: 'add'
+  options:
+    parameters:
+      profile_type:
+        use_current_language: TRUE
+  requirements:
+    _profile_access_check: 'profile:{profile_type}'
+
+entity.profile.edit_form:
+  path: '/user/{user}/edit/profile/{profile_type}/{profile}'
+  defaults:
+    _entity_form: 'profile.edit'
+    _title: 'Edit a profile'
+  requirements:
+    _entity_access: 'profile.update'
+
+entity.profile.delete_form:
+  path: '/profile/{profile}/delete'
+  defaults:
+    _entity_form: 'profile.delete'
+    _title: 'Delete a profile'
+  requirements:
+    _entity_access: 'profile.delete'
+
+entity.profile.canonical:
+  path: '/profile/{profile}'
+  defaults:
+    _content: '\Drupal\profile\Controller\ProfileViewController::view'
+    _title_callback: '\Drupal\profile\Controller\ProfileViewController::title'
+  requirements:
+    _entity_access: 'profile.view'
+
+profile.multiple_delete_confirm:
+  path: '/admin/content/profile/delete'
+  defaults:
+    _form: '\Drupal\profile\Form\DeleteMultiple'
+  requirements:
+    _permission: 'administer profiles'
