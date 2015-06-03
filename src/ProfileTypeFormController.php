@@ -7,10 +7,10 @@
 
 namespace Drupal\profile;
 
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\String;
 use Drupal\profile\Entity\ProfileType;
 
 
@@ -27,7 +27,7 @@ class ProfileTypeFormController extends EntityForm {
     $type = $this->entity;
 
     if ($this->operation == 'add') {
-      $form['#title'] = String::checkPlain($this->t('Add profile type'));
+      $form['#title'] = SafeMarkup::checkPlain($this->t('Add profile type'));
     }
     else {
       $form['#title'] = $this->t('Edit %label profile type', array('%label' => $type->label()));

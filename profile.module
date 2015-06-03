@@ -9,7 +9,7 @@ use Drupal\user\UserInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Url;
 use Drupal\Core\Access\AccessResult;
 use Drupal\profile\Entity\ProfileType;
@@ -239,7 +239,7 @@ function profile_theme() {
  */
 function template_preprocess_profile_items(&$variables) {
   if (count($variables['profile_items'])) {
-    $variables['title'] = String::checkPlain($variables['type']);
+    $variables['title'] = SafeMarkup::checkPlain($variables['type']);
     foreach ($variables['profile_items'] as $profile_item) {
       $variables['items'][] = entity_view($profile_item, 'default');
       if ($profile_item->access('update')) {
