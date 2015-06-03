@@ -7,6 +7,7 @@
 
 namespace Drupal\profile\Entity;
 
+use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
@@ -57,6 +58,8 @@ use Drupal\user\UserInterface;
  * )
  */
 class Profile extends ContentEntityBase implements ProfileInterface {
+
+  use EntityChangedTrait;
 
   /**
    * {@inheritdoc}
