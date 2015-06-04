@@ -7,9 +7,8 @@
 
 namespace Drupal\profile\Form;
 
-use Drupal\Core\Entity\EntityConfirmFormBase;
-use Drupal\Core\Database\Connection;
-use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\Core\Entity\EntityDeleteForm;
+use Drupal\Core\Entity\Query\QueryFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
@@ -17,23 +16,23 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Provides a confirmation form for deleting a Profile type entity.
  */
-class ProfileTypeDeleteForm extends EntityConfirmFormBase {
+class ProfileTypeDeleteForm extends EntityDeleteForm {
 
   /**
-   * The database connection.
+   * The query factory to create entity queries.
    *
-   * @var \Drupal\Core\Database\Connection
+   * @var \Drupal\Core\Entity\Query\QueryFactory
    */
-  protected $database;
+  protected $queryFactory;
 
   /**
-   * Constructs a new NodeTypeDeleteConfirm object.
+   * Constructs a new ProductTypeDeleteForm object.
    *
-   * @param \Drupal\Core\Database\Connection $database
-   *   The database connection.
+   * @param \Drupal\Core\Entity\Query\QueryFactory $queryFactory
+   *    The entity query object.
    */
-  public function __construct(Connection $database) {
-    $this->database = $database;
+  public function __construct(QueryFactory $queryFactory) {
+    $this->queryFactory = $queryFactory;
   }
 
   /**
@@ -41,7 +40,7 @@ class ProfileTypeDeleteForm extends EntityConfirmFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('database')
+      $container->get('entity.query')
     );
   }
 
@@ -70,8 +69,10 @@ class ProfileTypeDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $num_profiles = $this->database->query("SELECT COUNT(*) FROM {profile} WHERE type = :type", array(':type' => $this->entity->id()))
-      ->fetchField();
+    $num_profiles = $this->queryFactory->get('profile')
+      ->condition('type', $this->entity->id())
+      ->count()
+      ->execute();
     if ($num_profiles) {
       $caption = '<p>' . \Drupal::translation()
           ->formatPlural($num_profiles, '%type is used by 1 profile on your site. You can not remove this profile type until you have removed all of the %type profiles.', '%type is used by @count profiles on your site. You may not remove %type until you have removed all of the %type profiles.', array('%type' => $this->entity->label())) . '</p>';
@@ -81,21 +82,6 @@ class ProfileTypeDeleteForm extends EntityConfirmFormBase {
     }
 
     return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function submit(array $form, FormStateInterface $form_state) {
-    $this->entity->delete();
-
-    \Drupal::service('logger.factory')
-      ->get('profile')
-      ->log(RfcLogLevel::NOTICE, 'Profile type %label has been deleted.', array('@type' => $this->entity->label()));
-
-    drupal_set_message(t('Profile type %label has been deleted.', array('%label' => $this->entity->label())));
-
-    $form_state->setRedirect('profile.overview_types');
   }
 
 }
