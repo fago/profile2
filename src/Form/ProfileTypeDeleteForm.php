@@ -10,7 +10,6 @@ namespace Drupal\profile\Form;
 use Drupal\Core\Entity\EntityDeleteForm;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -42,27 +41,6 @@ class ProfileTypeDeleteForm extends EntityDeleteForm {
     return new static(
       $container->get('entity.query')
     );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getQuestion() {
-    return $this->t('Are you sure you want to delete %label profile type?', array('%label' => $this->entity->label()));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getCancelUrl() {
-    return new Url('profile.overview_types');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getConfirmText() {
-    return $this->t('Delete');
   }
 
   /**

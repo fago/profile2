@@ -93,7 +93,7 @@ class ProfileTypeFormController extends EntityForm {
     else {
       drupal_set_message(t('%label profile type has been created.', array('%label' => $type->label())));
     }
-    $form_state->setRedirect('profile.overview_types');
+    $form_state->setRedirect('entity.profile_type.collection');
   }
 
   /**

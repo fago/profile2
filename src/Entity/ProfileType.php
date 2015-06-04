@@ -47,6 +47,7 @@ use Drupal\profile\ProfileTypeInterface;
  *     "delete-form" = "/admin/config/people/profiles/types/manage/{profile_type}/delete",
  *     "edit-form" = "/admin/config/people/profiles/types/manage/{profile_type}",
  *     "admin-form" = "/admin/config/people/profiles/types/manage/{profile_type}",
+ *     "collection" = "/admin/config/people/profiles/types"
  *   }
  * )
  */

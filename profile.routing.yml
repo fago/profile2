@@ -5,7 +5,7 @@ profile.overview_profiles:
   requirements:
     _permission: 'administer profiles'
 
-profile.overview_types:
+entity.profile_type.collection:
   path: '/admin/config/people/profiles/types'
   defaults:
     _entity_list: 'profile_type'
