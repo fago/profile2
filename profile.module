@@ -54,14 +54,14 @@ function profile_profile_access(ProfileInterface $profile, $op, $account) {
   switch ($op) {
     case 'view':
       if ($account->hasPermission('view any ' . $type . ' profile', $account)) {
-        return AccessResult::allowed()->cachePerRole();
+        return AccessResult::allowed()->cachePerPermissions();
       }
       else {
         return AccessResult::allowedIfHasPermission($account, 'view own ' . $type . ' profile');
       }
     case 'create':
       if ($account->hasPermission('add any ' . $type . ' profile', $account)) {
-        return AccessResult::allowed()->cachePerRole();
+        return AccessResult::allowed()->cachePerPermissions();
       }
       else {
         return AccessResult::allowedIfHasPermission($account, 'add own ' . $type . ' profile');
@@ -69,18 +69,18 @@ function profile_profile_access(ProfileInterface $profile, $op, $account) {
 
     case 'update':
       if ($account->hasPermission('edit any ' . $type . ' profile', $account)) {
-        return AccessResult::allowed()->cachePerRole();
+        return AccessResult::allowed()->cachePerPermissions();
       }
       else {
-        return AccessResult::allowedIf($account->hasPermission('edit own ' . $type . ' profile', $account) && ($account->id() == $profile->getOwnerId()))->cachePerRole()->cachePerUser()->cacheUntilEntityChanges($profile);
+        return AccessResult::allowedIf($account->hasPermission('edit own ' . $type . ' profile', $account) && ($account->id() == $profile->getOwnerId()))->cachePerPermissions()->cachePerUser()->cacheUntilEntityChanges($profile);
       }
 
     case 'delete':
       if ($account->hasPermission('delete any ' . $type . ' profile', $account)) {
-        return AccessResult::allowed()->cachePerRole();
+        return AccessResult::allowed()->cachePerPermissions();
       }
       else {
-        return AccessResult::allowedIf($account->hasPermission('delete own ' . $type . ' profile', $account) && ($account->id() == $profile->getOwnerId()))->cachePerRole()->cachePerUser()->cacheUntilEntityChanges($profile);
+        return AccessResult::allowedIf($account->hasPermission('delete own ' . $type . ' profile', $account) && ($account->id() == $profile->getOwnerId()))->cachePerPermissions()->cachePerUser()->cacheUntilEntityChanges($profile);
       }
 
     default:
