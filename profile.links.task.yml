@@ -4,8 +4,8 @@ profile.overview_profiles_tab:
   base_route: profile.overview_profiles
   title: 'Profiles'
 
-profile.overview_types_tab:
-  route_name: profile.overview_types
+entity.profile_type.collection_tab:
+  route_name: entity.profile_type.collection
   base_route: profile.overview_profiles
   title: 'Profile types'
 

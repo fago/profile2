@@ -33,11 +33,21 @@ use Drupal\profile\ProfileTypeInterface;
  *     "id" = "id",
  *     "label" = "label"
  *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "registration",
+ *     "multiple",
+ *     "weight",
+ *     "status",
+ *     "langcode"
+ *   },
  *   links = {
  *     "add-form" = "/admin/config/people/profiles/types/add",
  *     "delete-form" = "/admin/config/people/profiles/types/manage/{profile_type}/delete",
  *     "edit-form" = "/admin/config/people/profiles/types/manage/{profile_type}",
  *     "admin-form" = "/admin/config/people/profiles/types/manage/{profile_type}",
+ *     "collection" = "/admin/config/people/profiles/types"
  *   }
  * )
  */

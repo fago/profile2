@@ -1,5 +1,5 @@
-profile.overview_types:
+entity.profile_type.collection:
   title: 'User profiles'
   description: 'Manage profile types, including fields, and profiles for users.'
-  route_name: profile.overview_types
+  route_name: entity.profile_type.collection
   parent: user.admin_index
