@@ -38,7 +38,7 @@ class LinkDelete extends Link {
 
     $this->options['alter']['make_link'] = TRUE;
     $this->options['alter']['path'] = "user/" . $profile->getOwnerId() . "/delete/" . $profile->bundle() . "/" . $profile->id();
-    $this->options['alter']['query'] = drupal_get_destination();
+    $this->options['alter']['query'] = \Drupal::destination()->getAsArray();
     $text = !empty($this->options['text']) ? $this->options['text'] : t('Delete');
     return $text;
   }

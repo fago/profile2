@@ -1,4 +1,4 @@
-profile.overview_profiles:
+profile.collection:
   path: '/admin/config/people/profiles'
   defaults:
     _title: 'Profiles'
@@ -16,7 +16,7 @@ entity.profile_type.collection:
 entity.profile_type.add_form:
   path: '/admin/config/people/profiles/types/add'
   defaults:
-    _entity_form: 'profile_type.add'
+    _entity_form: profile_type.add
     _title: 'Add'
   requirements:
     _permission: 'administer profile types'
@@ -24,7 +24,7 @@ entity.profile_type.add_form:
 entity.profile_type.edit_form:
   path: '/admin/config/people/profiles/types/manage/{profile_type}'
   defaults:
-    _entity_form: 'profile_type.edit'
+    _entity_form: profile_type.edit
     _title: 'Edit'
   requirements:
     _permission: 'administer profile types'
@@ -32,28 +32,24 @@ entity.profile_type.edit_form:
 entity.profile_type.delete_form:
   path: '/admin/config/people/profiles/types/manage/{profile_type}/delete'
   defaults:
-    _entity_form: 'profile_type.delete'
+    _entity_form: profile_type.delete
     _title: 'Delete'
   requirements:
     _permission: 'administer profile types'
 
 entity.profile.add_form:
-  path: '/user/{user}/edit/profile/{profile_type}'
+  path: '/user/{user}/profile/{profile_type}'
   defaults:
     _controller: '\Drupal\profile\Controller\ProfileController::addProfile'
     _title: 'Add new profile'
     operation: 'add'
-  options:
-    parameters:
-      profile_type:
-        use_current_language: TRUE
   requirements:
     _profile_access_check: 'profile:{profile_type}'
 
 entity.profile.edit_form:
-  path: '/user/{user}/edit/profile/{profile_type}/{profile}'
+  path: '/user/{user}/profile/{profile_type}/{profile}'
   defaults:
-    _entity_form: 'profile.edit'
+    _entity_form: profile.edit
     _title: 'Edit a profile'
   requirements:
     _entity_access: 'profile.update'
@@ -61,7 +57,7 @@ entity.profile.edit_form:
 entity.profile.delete_form:
   path: '/profile/{profile}/delete'
   defaults:
-    _entity_form: 'profile.delete'
+    _entity_form: profile.delete
     _title: 'Delete a profile'
   requirements:
     _entity_access: 'profile.delete'
