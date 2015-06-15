@@ -51,9 +51,9 @@ use Drupal\user\UserInterface;
  *   },
  *  links = {
  *    "canonical" = "/profile/{profile}",
- *    "admin-form" = "/admin/config/people/profiles/types/manage/{profile_type}",
- *    "edit-form" = "/user/{user}/edit/profile/{profile_type}/{profile}",
- *    "delete-form" = "/profile/{profile}/delete"
+ *    "edit-form" = "/user/{user}/profile/{profile_type}/{profile}",
+ *    "delete-form" = "/profile/{profile}/delete",
+ *    "collection" = "/admin/config/people/profiles"
  *   },
  * )
  */
