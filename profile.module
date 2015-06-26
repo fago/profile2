@@ -160,7 +160,7 @@ function profile_form_user_register_form_alter(&$form, FormStateInterface $form_
       return $field_definition instanceof FieldConfigInterface;
     });
 
-    if ($profile_type->registration === TRUE && count($instances)) {
+    if ($profile_type->getRegistration() === TRUE && count($instances)) {
       $id = $profile_type->id();
       $property = ['profiles',$id];
       $profile = $form_state->get($property);

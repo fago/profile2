@@ -30,8 +30,8 @@ class ProfileTypeListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     $row['type'] = $entity->link();
-    $row['registration'] = $entity->registration ? t('Yes') : t('No');
-    $row['multiple'] = $entity->multiple ? t('Yes') : t('No');
+    $row['registration'] = $entity->getRegistration() ? t('Yes') : t('No');
+    $row['multiple'] = $entity->getMultiple() ? t('Yes') : t('No');
     return $row + parent::buildRow($entity);
   }
 
