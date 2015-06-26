@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "profile_delete_action",
  *   label = @Translation("Delete selected profile"),
  *   type = "profile",
- *   confirm_form_route_name = "profile.multiple_delete_confirm"
+ *   confirm_form_route_name = "entity.profile.multiple_delete_confirm"
  * )
  */
 class DeleteProfile extends ActionBase implements ContainerFactoryPluginInterface {

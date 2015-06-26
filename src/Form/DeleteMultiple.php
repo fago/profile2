@@ -83,7 +83,7 @@ class DeleteMultiple extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('profile.collection');
+    return new Url('entity.profile.collection');
   }
 
   /**
@@ -124,7 +124,7 @@ class DeleteMultiple extends ConfirmFormBase {
       $this->logger('content')->notice('Deleted @count profiles.', array('@count' => $count));
       drupal_set_message(\Drupal::translation()->formatPlural($count, 'Deleted 1 profile.', 'Deleted @count profiles.'));
     }
-    $form_state->setRedirect('profile.collection');
+    $form_state->setRedirect('entity.profile.collection');
   }
 
 }

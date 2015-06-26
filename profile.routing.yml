@@ -1,4 +1,4 @@
-profile.collection:
+entity.profile.collection:
   path: '/admin/config/people/profiles'
   defaults:
     _title: 'Profiles'
@@ -70,7 +70,7 @@ entity.profile.canonical:
   requirements:
     _entity_access: 'profile.view'
 
-profile.multiple_delete_confirm:
+entity.profile.multiple_delete_confirm:
   path: '/admin/content/profile/delete'
   defaults:
     _form: '\Drupal\profile\Form\DeleteMultiple'

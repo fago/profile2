@@ -1,12 +1,12 @@
 # Tabs on the profile admin page
-profile.collection_tab:
-  route_name: profile.collection
-  base_route: profile.collection
+entity.profile.collection_tab:
+  route_name: entity.profile.collection
+  base_route: entity.profile.collection
   title: 'Profiles'
 
 entity.profile_type.collection_tab:
   route_name: entity.profile_type.collection
-  base_route: profile.collection
+  base_route: entity.profile.collection
   title: 'Profile types'
 
 # Secondary tabs on main account edit page
