@@ -2,15 +2,14 @@
 
 /**
  * @file
- * Contains \Drupal\profile\ProfileInterface.
+ * Contains \Drupal\profile\Entity|ProfileInterface.
  */
 
-namespace Drupal\profile;
+namespace Drupal\profile\Entity;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\user\EntityOwnerInterface;
-use Drupal\user\UserInterface;
 
 /**
  * Provides an interface defining a profile entity.

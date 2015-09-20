@@ -9,7 +9,6 @@
 namespace Drupal\profile\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\profile\ProfileTypeInterface;
 
 /**
  * Defines the profile type entity class.
