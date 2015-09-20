@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\profile\ProfileTypeFormController.
+ * Contains \Drupal\profile\Form\ProfileTypeForm.
  */
 
-namespace Drupal\profile;
+namespace Drupal\profile\Form;
 
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -18,7 +18,7 @@ use Drupal\profile\Entity\ProfileType;
 /**
  * Form controller for profile type forms.
  */
-class ProfileTypeFormController extends EntityForm {
+class ProfileTypeForm extends EntityForm {
 
   /**
    * {@inheritdoc}

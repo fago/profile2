@@ -19,9 +19,9 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *   handlers = {
  *     "list_builder" = "Drupal\profile\ProfileTypeListBuilder",
  *     "form" = {
- *       "default" = "Drupal\profile\ProfileTypeFormController",
- *       "add" = "Drupal\profile\ProfileTypeFormController",
- *       "edit" = "Drupal\profile\ProfileTypeFormController",
+ *       "default" = "Drupal\profile\Form\ProfileTypeForm",
+ *       "add" = "Drupal\profile\Form\ProfileTypeForm",
+ *       "edit" = "Drupal\profile\Form\ProfileTypeForm",
  *       "delete" = "Drupal\profile\Form\ProfileTypeDeleteForm"
  *     },
  *   },

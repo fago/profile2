@@ -2,19 +2,19 @@
 
 /**
  * @file
- * Contains \Drupal\profile\ProfileFormController.
+ * Contains \Drupal\profile\Form\ProfileForm.
  */
 
-namespace Drupal\profile;
+namespace Drupal\profile\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
-use Drupal\profile\Entity\ProfileType;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\profile\Entity\ProfileType;
 
 /**
  * Form controller for profile forms.
  */
-class ProfileFormController extends ContentEntityForm {
+class ProfileForm extends ContentEntityForm {
 
   /**
    * {@inheritdoc}
