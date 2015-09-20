@@ -27,9 +27,9 @@ use Drupal\user\UserInterface;
  *     "access" = "Drupal\profile\ProfileAccessControlHandler",
  *     "list_builder" = "Drupal\profile\ProfileListBuilder",
  *     "form" = {
- *       "default" = "Drupal\profile\ProfileFormController",
- *       "add" = "Drupal\profile\ProfileFormController",
- *       "edit" = "Drupal\profile\ProfileFormController",
+ *       "default" = "Drupal\profile\Form\ProfileForm",
+ *       "add" = "Drupal\profile\Form\ProfileForm",
+ *       "edit" = "Drupal\profile\Form\ProfileForm",
  *       "delete" = "Drupal\profile\Form\ProfileDeleteForm",
  *     },
  *   },
