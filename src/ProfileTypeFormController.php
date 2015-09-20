@@ -11,6 +11,7 @@ use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\field_ui\FieldUI;
 use Drupal\profile\Entity\ProfileType;
 
 
@@ -100,9 +101,9 @@ class ProfileTypeFormController extends EntityForm {
    * Form submission handler to redirect to Manage fields page of Field UI.
    */
   public function redirectToFieldUI(array $form, FormStateInterface $form_state) {
-    $form_state->setRedirect('field_ui.overview_profile', array(
-      'profile_type' => $this->entity->id()
-    ));
+    if ($form_state->getTriggeringElement()['#parents'][0] === 'save_continue' && $route_info = FieldUI::getOverviewRouteInfo('profile', $this->entity->id())) {
+      $form_state->setRedirectUrl($route_info);
+    }
   }
 
   /**
