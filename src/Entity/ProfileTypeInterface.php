@@ -5,7 +5,7 @@
  * Contains \Drupal\profile\Entity\ProfileTypeInterface.
  */
 
-namespace Drupal\profile;
+namespace Drupal\profile\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 

@@ -9,7 +9,7 @@ namespace Drupal\profile\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\profile\ProfileTypeInterface;
+use Drupal\profile\Entity\ProfileTypeInterface;
 use Drupal\profile\Entity\Profile;
 use Drupal\user\UserInterface;
 
@@ -23,7 +23,7 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
    *
    * @param \Drupal\user\UserInterface $profile_type
    *   The user account.
-   * @param \Drupal\profile\ProfileTypeInterface $profile_type
+   * @param \Drupal\profile\Entity\ProfileTypeInterface $profile_type
    *   The profile type entity for the profile.
    *
    * @return array
@@ -55,7 +55,7 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
   /**
    * The _title_callback for the entity.profile.add_form route.
    *
-   * @param \Drupal\profile\ProfileTypeInterface $profile_type
+   * @param \Drupal\profile\Entity\ProfileTypeInterface $profile_type
    *   The current profile type.
    *
    * @return string
