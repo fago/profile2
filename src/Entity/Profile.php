@@ -93,8 +93,7 @@ class Profile extends ContentEntityBase implements ProfileInterface {
       ->setDescription(t('The user ID of the user associated with the profile.'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
-      ->setTranslatable(TRUE);
+      ->setSetting('handler', 'default');
 
     $fields['langcode'] = BaseFieldDefinition::create('language')
       ->setLabel(t('Language code'))
@@ -104,20 +103,17 @@ class Profile extends ContentEntityBase implements ProfileInterface {
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Active status'))
       ->setDescription(t('A boolean indicating whether the profile is active.'))
-      ->setRevisionable(TRUE)
-      ->setTranslatable(TRUE);
+      ->setRevisionable(TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the profile was created.'))
-      ->setRevisionable(TRUE)
-      ->setTranslatable(TRUE);
+      ->setRevisionable(TRUE);
 
     $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed'))
       ->setDescription(t('The time that the profile was last edited.'))
-      ->setRevisionable(TRUE)
-      ->setTranslatable(TRUE);
+      ->setRevisionable(TRUE);
 
     return $fields;
   }
