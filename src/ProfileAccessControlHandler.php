@@ -96,7 +96,7 @@ class ProfileAccessControlHandler extends EntityAccessControlHandler implements 
   /**
    * {@inheritdoc}
    */
-  public function createAccess($entity_bundle = NULL, AccountInterface $account = NULL, array $context = array(), $return_as_object = FALSE) {
+  public function createAccess($entity_bundle = NULL, AccountInterface $account = NULL, array $context = [], $return_as_object = FALSE) {
     $account = $this->prepareUser($account);
 
     if ($account->hasPermission('bypass profile access')) {

@@ -16,7 +16,7 @@ use Drupal\simpletest\WebTestBase;
  */
 class ProfileFieldAccessTest extends WebTestBase {
 
-  public static $modules = array('profile', 'text', 'field_ui');
+  public static $modules = ['profile', 'text', 'field_ui'];
 
   private $type;
   private $admin_user;
@@ -26,28 +26,28 @@ class ProfileFieldAccessTest extends WebTestBase {
   function setUp() {
     parent::setUp();
 
-    $this->type = entity_create('profile_type', array(
+    $this->type = entity_create('profile_type', [
       'id' => 'personal',
       'label' => 'Personal data',
       'weight' => 0,
       'registration' => TRUE,
-    ));
+    ]);
     $this->type->save();
 
-    $this->checkPermissions(array(), TRUE);
-    $this->admin_user = $this->drupalCreateUser(array(
+    $this->checkPermissions([], TRUE);
+    $this->admin_user = $this->drupalCreateUser([
       'access user profiles',
       'administer profile types',
       'administer profile fields',
       'administer profile display',
       'bypass profile access',
-    ));
-    $user_permissions = array(
+    ]);
+    $user_permissions = [
       'access user profiles',
       'add own personal profile',
       'edit own personal profile',
       'view any personal profile',
-    );
+    ];
     $this->web_user = $this->drupalCreateUser($user_permissions);
     $this->other_user = $this->drupalCreateUser($user_permissions);
   }
@@ -61,26 +61,26 @@ class ProfileFieldAccessTest extends WebTestBase {
     $this->drupalLogin($this->admin_user);
 
     // Create a private profile field.
-    $edit = array(
+    $edit = [
       'new_storage_type' => 'string',
       'label' => 'Secret',
       'field_name' => 'secret',
-    );
+    ];
     $this->drupalPostForm("admin/config/people/profiles/types/manage/$id/fields/add-field", $edit, t('Save and continue'));
 
-    $edit = array(
+    $edit = [
       'field[settings][profile_private]' => 1,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save field settings'));
-    $this->drupalPostForm(NULL, array(), t('Save settings'));
+    $this->drupalPostForm(NULL, [], t('Save settings'));
 
     // Fill in a field value.
     $this->drupalLogin($this->web_user);
     $uid = $this->web_user->id();
     $secret = $this->randomMachineName();
-    $edit = array(
+    $edit = [
       'field_secret[0][value]' => $secret,
-    );
+    ];
     $this->drupalPostForm("user/$uid/edit/profile/$id", $edit, t('Save'));
 
     // User cache page need to be cleared to see new profile.

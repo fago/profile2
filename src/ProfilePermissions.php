@@ -23,7 +23,7 @@ class ProfilePermissions {
    * @return array
    */
   public function profileTypePermissions() {
-    $perms = array();
+    $perms = [];
     // Generate profile permissions for all profile types.
     foreach (ProfileType::loadMultiple() as $type) {
       $perms += $this->buildPermissions($type);
@@ -43,34 +43,34 @@ class ProfilePermissions {
    */
   protected function buildPermissions(ProfileType $profile_type) {
     $type_id = $profile_type->id();
-    $type_params = array('%type' => $profile_type->label());
+    $type_params = ['%type' => $profile_type->label()];
 
-    return array(
-      "add own $type_id profile" => array(
+    return [
+      "add own $type_id profile" => [
         'title' => $this->t('%type: Add own profile', $type_params),
-      ),
-      "add any $type_id profile" => array(
+      ],
+      "add any $type_id profile" => [
         'title' => $this->t('%type: Add any profile', $type_params),
-      ),
-      "view own $type_id profile" => array(
+      ],
+      "view own $type_id profile" => [
         'title' => $this->t('%type: View own profile', $type_params),
-      ),
-      "view any $type_id profile" => array(
+      ],
+      "view any $type_id profile" => [
         'title' => $this->t('%type: View any profile', $type_params),
-      ),
-      "edit own $type_id profile" => array(
+      ],
+      "edit own $type_id profile" => [
         'title' => $this->t('%type: Edit own profile', $type_params),
-      ),
-      "edit any $type_id profile" => array(
+      ],
+      "edit any $type_id profile" => [
         'title' => $this->t('%type: Edit any profile', $type_params),
-      ),
-      "delete own $type_id profile" => array(
+      ],
+      "delete own $type_id profile" => [
         'title' => $this->t('%type: Delete own profile', $type_params),
-      ),
-      "delete any $type_id profile" => array(
+      ],
+      "delete any $type_id profile" => [
         'title' => $this->t('%type: Delete any profile', $type_params),
-      ),
-    );
+      ],
+    ];
   }
 
 }

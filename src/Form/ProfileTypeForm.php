@@ -31,35 +31,35 @@ class ProfileTypeForm extends EntityForm {
       $form['#title'] = SafeMarkup::checkPlain($this->t('Add profile type'));
     }
     else {
-      $form['#title'] = $this->t('Edit %label profile type', array('%label' => $type->label()));
+      $form['#title'] = $this->t('Edit %label profile type', ['%label' => $type->label()]);
     }
 
-    $form['label'] = array(
+    $form['label'] = [
       '#title' => t('Label'),
       '#type' => 'textfield',
       '#default_value' => $type->label(),
       '#description' => t('The human-readable name of this profile type.'),
       '#required' => TRUE,
       '#size' => 30,
-    );
-    $form['id'] = array(
+    ];
+    $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $type->id(),
       '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
-      '#machine_name' => array(
-        'exists' => array($this, 'exists'),
-      ),
-    );
-    $form['registration'] = array(
+      '#machine_name' => [
+        'exists' => [$this, 'exists'],
+      ],
+    ];
+    $form['registration'] = [
       '#type' => 'checkbox',
       '#title' => t('Include in user registration form'),
       '#default_value' => $type->getRegistration(),
-    );
-    $form['multiple'] = array(
+    ];
+    $form['multiple'] = [
       '#type' => 'checkbox',
       '#title' => t('Allow multiple profiles'),
       '#default_value' => $type->getMultiple(),
-    );
+    ];
     return $form;
   }
 
@@ -73,10 +73,10 @@ class ProfileTypeForm extends EntityForm {
     ) {
       $actions['save_continue'] = $actions['submit'];
       $actions['save_continue']['#value'] = t('Save and manage fields');
-      $actions['save_continue']['#submit'][] = array(
+      $actions['save_continue']['#submit'][] = [
         $this,
         'redirectToFieldUI'
-      );
+      ];
     }
     return $actions;
   }
@@ -89,10 +89,10 @@ class ProfileTypeForm extends EntityForm {
     $status = $type->save();
 
     if ($status == SAVED_UPDATED) {
-      drupal_set_message(t('%label profile type has been updated.', array('%label' => $type->label())));
+      drupal_set_message(t('%label profile type has been updated.', ['%label' => $type->label()]));
     }
     else {
-      drupal_set_message(t('%label profile type has been created.', array('%label' => $type->label())));
+      drupal_set_message(t('%label profile type has been created.', ['%label' => $type->label()]));
     }
     $form_state->setRedirect('entity.profile_type.collection');
   }
@@ -110,9 +110,9 @@ class ProfileTypeForm extends EntityForm {
    * {@inheritdoc}
    */
   public function delete(array $form, FormStateInterface $form_state) {
-    $form_state->setRedirect('entity.profile_type.delete_form', array(
+    $form_state->setRedirect('entity.profile_type.delete_form', [
       'profile_type' => $this->entity->id()
-    ));
+    ]);
   }
 
   /**

@@ -31,12 +31,12 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
    */
   public function addProfile(UserInterface $user, ProfileTypeInterface $profile_type) {
 
-    $profile = $this->entityManager()->getStorage('profile')->create(array(
+    $profile = $this->entityManager()->getStorage('profile')->create([
       'uid' => $user->id(),
       'type' => $profile_type->id(),
-    ));
+    ]);
 
-    return $this->entityFormBuilder()->getForm($profile, 'add', array('uid' => $user->id(), 'created' => REQUEST_TIME));
+    return $this->entityFormBuilder()->getForm($profile, 'add', ['uid' => $user->id(), 'created' => REQUEST_TIME]);
   }
 
   /**
@@ -63,7 +63,7 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
    */
   public function addPageTitle(ProfileTypeInterface $profile_type) {
     // @todo: edit profile uses this form too?
-    return $this->t('Create @label', array('@label' => $profile_type->label()));
+    return $this->t('Create @label', ['@label' => $profile_type->label()]);
   }
 
 }
