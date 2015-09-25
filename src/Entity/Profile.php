@@ -42,8 +42,8 @@ use Drupal\user\UserInterface;
  *   fieldable = TRUE,
  *   translatable = TRUE,
  *   entity_keys = {
- *     "id" = "pid",
- *     "revision" = "vid",
+ *     "id" = "profile_id",
+ *     "revision" = "revision_id",
  *     "bundle" = "type",
  *     "langcode" = "langcode",
  *     "uuid" = "uuid"
@@ -65,7 +65,7 @@ class Profile extends ContentEntityBase implements ProfileInterface {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
 
-    $fields['pid'] = BaseFieldDefinition::create('integer')
+    $fields['profile_id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Profile ID'))
       ->setDescription(t('The profile ID.'))
       ->setReadOnly(TRUE)
@@ -76,7 +76,7 @@ class Profile extends ContentEntityBase implements ProfileInterface {
       ->setDescription(t('The profile UUID.'))
       ->setReadOnly(TRUE);
 
-    $fields['vid'] = BaseFieldDefinition::create('integer')
+    $fields['revision_id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Revision ID'))
       ->setDescription(t('The profile revision ID.'))
       ->setReadOnly(TRUE)
@@ -126,7 +126,7 @@ class Profile extends ContentEntityBase implements ProfileInterface {
    * Overrides Entity::id().
    */
   public function id() {
-    return $this->get('pid')->value;
+    return $this->get('profile_id')->value;
   }
 
   /**

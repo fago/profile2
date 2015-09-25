@@ -11,7 +11,7 @@ module: views
 description: 'List of users profiles'
 tag: ''
 base_table: profile_field_data
-base_field: pid
+base_field: profile_id
 core: 8.x
 display:
   default:
