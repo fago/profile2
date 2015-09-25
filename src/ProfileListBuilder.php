@@ -60,27 +60,27 @@ class ProfileListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header = array(
+    $header = [
       'label' => $this->t('Label'),
-      'type' => array(
+      'type' => [
         'data' => $this->t('Type'),
-        'class' => array(RESPONSIVE_PRIORITY_MEDIUM),
-      ),
-      'owner' => array(
+        'class' => [RESPONSIVE_PRIORITY_MEDIUM],
+      ],
+      'owner' => [
         'data' => $this->t('Owner'),
-        'class' => array(RESPONSIVE_PRIORITY_LOW),
-      ),
+        'class' => [RESPONSIVE_PRIORITY_LOW],
+      ],
       'status' => $this->t('Status'),
-      'changed' => array(
+      'changed' => [
         'data' => $this->t('Updated'),
-        'class' => array(RESPONSIVE_PRIORITY_LOW),
-      ),
-    );
+        'class' => [RESPONSIVE_PRIORITY_LOW],
+      ],
+    ];
     if (\Drupal::languageManager()->isMultilingual()) {
-      $header['language_name'] = array(
+      $header['language_name'] = [
         'data' => $this->t('Language'),
-        'class' => array(RESPONSIVE_PRIORITY_LOW),
-      );
+        'class' => [RESPONSIVE_PRIORITY_LOW],
+      ];
     }
     return $header + parent::buildHeader();
   }
@@ -90,25 +90,25 @@ class ProfileListBuilder extends EntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     /** @var \Drupal\profile\ProfileInterface $entity */
-    $mark = array(
+    $mark = [
       '#theme' => 'mark',
       '#mark_type' => node_mark($entity->id(), $entity->getChangedTime()),
-    );
+    ];
     $langcode = $entity->language()->id;
     $uri = $entity->urlInfo();
     $options = $uri->getOptions();
-    $options += ($langcode != LanguageInterface::LANGCODE_NOT_SPECIFIED && isset($languages[$langcode]) ? array('language' => $languages[$langcode]) : array());
+    $options += ($langcode != LanguageInterface::LANGCODE_NOT_SPECIFIED && isset($languages[$langcode]) ? ['language' => $languages[$langcode]] : []);
     $uri->setOptions($options);
-    $row['label']['data'] = array(
+    $row['label']['data'] = [
         '#type' => 'link',
         '#title' => $entity->label(),
         '#suffix' => ' ' . drupal_render($mark),
-      ) + $uri->toRenderArray();
+      ] + $uri->toRenderArray();
     $row['type'] = $entity->getType()->id();
-    $row['owner']['data'] = array(
+    $row['owner']['data'] = [
       '#theme' => 'username',
       '#account' => $entity->getOwner(),
-    );
+    ];
     $row['status'] = $entity->isActive() ? $this->t('active') : $this->t('not active');
     $row['changed'] = $this->dateFormatter->format($entity->getChangedTime(), 'short');
     $language_manager = \Drupal::languageManager();
@@ -116,24 +116,24 @@ class ProfileListBuilder extends EntityListBuilder {
       $row['language_name'] = $language_manager->getLanguageName($langcode);
     }
 
-    $route_params = array('user' => $entity->getOwnerId(), 'type' => $entity->bundle(), 'profile' => $entity->id());
-    $links['edit'] = array(
+    $route_params = ['user' => $entity->getOwnerId(), 'type' => $entity->bundle(), 'profile' => $entity->id()];
+    $links['edit'] = [
       'title' => t('Edit'),
       'route_name' => 'entity.profile.edit_form',
       'route_parameters' => $route_params,
-    );
-    $links['delete'] = array(
+    ];
+    $links['delete'] = [
       'title' => t('Delete'),
       'route_name' => 'entity.profile.delete_form',
       'route_parameters' => $route_params,
-    );
+    ];
 
-    $row[] = array(
-      'data' => array(
+    $row[] = [
+      'data' => [
         '#type' => 'operations',
         '#links' => $links,
-      ),
-    );
+      ],
+    ];
 
     return $row + parent::buildRow($entity);
   }

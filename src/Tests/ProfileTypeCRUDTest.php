@@ -17,7 +17,7 @@ use Drupal\Component\Utility\Unicode;
  */
 class ProfileTypeCRUDTest extends WebTestBase {
 
-  public static $modules = array('profile', 'field_ui', 'text');
+  public static $modules = ['profile', 'field_ui', 'text'];
 
   /**
    * Tests CRUD operations for profile types through the UI.
@@ -31,13 +31,13 @@ class ProfileTypeCRUDTest extends WebTestBase {
     $this->assertUrl('admin/config/people/profiles/types/add');
     $id = Unicode::strtolower($this->randomMachineName());
     $label = $this->randomString();
-    $edit = array(
+    $edit = [
       'id' => $id,
       'label' => $label,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertUrl('admin/config/people/profiles/types');
-    $this->assertRaw(format_string('%label profile type has been created.', array('%label' => $label)));
+    $this->assertRaw(format_string('%label profile type has been created.', ['%label' => $label]));
     $this->assertLinkByHref("admin/config/people/profiles/types/manage/$id");
     $this->assertLinkByHref("admin/config/people/profiles/types/manage/$id/fields");
     $this->assertLinkByHref("admin/config/people/profiles/types/manage/$id/display");
@@ -45,43 +45,43 @@ class ProfileTypeCRUDTest extends WebTestBase {
 
     // Edit the new profile type.
     $this->drupalGet("admin/config/people/profiles/types/manage/$id");
-    $this->assertRaw(format_string('Edit %label profile type', array('%label' => $label)));
-    $edit = array(
+    $this->assertRaw(format_string('Edit %label profile type', ['%label' => $label]));
+    $edit = [
       'registration' => 1,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertUrl('admin/config/people/profiles/types');
-    $this->assertRaw(format_string('%label profile type has been updated.', array('%label' => $label)));
+    $this->assertRaw(format_string('%label profile type has been updated.', ['%label' => $label]));
 
     // Add a field to the profile type.
     $this->drupalGet("admin/config/people/profiles/types/manage/$id/fields/add-field");
     $field_name = Unicode::strtolower($this->randomMachineName());
     $field_label = $this->randomString();
-    $edit = array(
+    $edit = [
       'new_storage_type' => 'string',
       'label' => $field_label,
       'field_name' => $field_name,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save and continue'));
-    $this->drupalPostForm(NULL, array(), t('Save field settings'));
-    $this->drupalPostForm(NULL, array(), t('Save settings'));
-    $this->assertUrl("admin/config/people/profiles/types/manage/$id/fields", array(
-      'query' => array(
+    $this->drupalPostForm(NULL, [], t('Save field settings'));
+    $this->drupalPostForm(NULL, [], t('Save settings'));
+    $this->assertUrl("admin/config/people/profiles/types/manage/$id/fields", [
+      'query' => [
         'field_config' => "profile.$id.field_$field_name",
         'destinations[0]' => "admin/config/people/profiles/types/manage/$id/fields/add-field",
-      )
-    ));
-    $this->assertRaw(format_string('Saved %label configuration.', array('%label' => $field_label)));
+      ]
+    ]);
+    $this->assertRaw(format_string('Saved %label configuration.', ['%label' => $field_label]));
 
     // Rename the profile type ID.
     $this->drupalGet("admin/config/people/profiles/types/manage/$id");
     $new_id = Unicode::strtolower($this->randomMachineName());
-    $edit = array(
+    $edit = [
       'id' => $new_id,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertUrl('admin/config/people/profiles/types');
-    $this->assertRaw(format_string('%label profile type has been updated.', array('%label' => $label)));
+    $this->assertRaw(format_string('%label profile type has been updated.', ['%label' => $label]));
     $this->assertLinkByHref("admin/config/people/profiles/types/manage/$new_id");
     $this->assertNoLinkByHref("admin/config/people/profiles/types/manage/$id");
     $id = $new_id;

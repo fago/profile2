@@ -43,24 +43,24 @@ class ProfileTypeListBuilder extends ConfigEntityListBuilder {
     // Place the edit operation after the operations added by field_ui.module
     // which have the weights 15, 20, 25.
     if (isset($operations['edit'])) {
-      $operations['edit'] = array(
+      $operations['edit'] = [
         'title' => t('Edit'),
         'weight' => 30,
         'url' => $entity->urlInfo('edit-form')
-      );
+      ];
     }
     if (isset($operations['delete'])) {
-      $operations['delete'] = array(
+      $operations['delete'] = [
         'title' => t('Delete'),
         'weight' => 35,
         'url' => $entity->urlInfo('delete-form')
-      );
+      ];
     }
     // Sort the operations to normalize link order.
-    uasort($operations, array(
+    uasort($operations, [
       'Drupal\Component\Utility\SortArray',
       'sortByWeightElement'
-    ));
+    ]);
 
     return $operations;
   }

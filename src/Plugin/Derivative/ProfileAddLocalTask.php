@@ -69,7 +69,7 @@ class ProfileAddLocalTask extends DeriverBase implements ContainerDeriverInterfa
    * {@inheritdoc}
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
-    $this->derivatives = array();
+    $this->derivatives = [];
     $user = \Drupal::request()->attributes->get('user');
     $route_name = \Drupal::routeMatch()->getRouteName();
 
@@ -79,7 +79,7 @@ class ProfileAddLocalTask extends DeriverBase implements ContainerDeriverInterfa
       PhpStorageFactory::get('twig')->deleteAll();
       drupal_flush_all_caches();
 
-      $configs = array();
+      $configs = [];
       foreach ($this->config as $config) {
         $instances = array_filter($this->entityManager->getFieldDefinitions('profile', $config->get('id')), function ($field_definition) {
           return $field_definition instanceof FieldConfigInterface;
@@ -94,10 +94,10 @@ class ProfileAddLocalTask extends DeriverBase implements ContainerDeriverInterfa
           // Expose profile types that users may create - either they have 0 of non-multiple or multiple.
           if ($config->get('multiple') === FALSE) {
             $profiles = $this->entityManager->getStorage('profile')
-              ->loadByProperties(array(
+              ->loadByProperties([
                 'uid' => $user->id(),
                 'type' => $config->get('id'),
-              ));
+              ]);
             // Single profile, none yet.
             if (!count($profiles)) {
               $display = TRUE;
@@ -114,11 +114,11 @@ class ProfileAddLocalTask extends DeriverBase implements ContainerDeriverInterfa
             $id = $config->get('id') . '-' . $user->id();
             $this->derivatives[$id] = $base_plugin_definition;
             $this->derivatives[$id]['title'] = \Drupal::translation()
-              ->translate('Add @type profile', array('@type' => Unicode::strtolower($config->get('label'))));
-            $this->derivatives[$id]['route_parameters'] = array(
+              ->translate('Add @type profile', ['@type' => Unicode::strtolower($config->get('label'))]);
+            $this->derivatives[$id]['route_parameters'] = [
               'user' => $user->id(),
               'type' => $config->get('id')
-            );
+            ];
           }
 
         }

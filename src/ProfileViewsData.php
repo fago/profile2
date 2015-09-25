@@ -19,45 +19,45 @@ class ProfileViewsData extends EntityViewsData {
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    $data['profile']['label'] = array(
+    $data['profile']['label'] = [
       'title' => t('Label'),
       'help' => t('The label of the profile item.'),
-      'field' => array(
+      'field' => [
         'id' => 'profile_label',
-      ),
-    );
+      ],
+    ];
 
-    $data['profile']['view_profile'] = array(
-      'field' => array(
+    $data['profile']['view_profile'] = [
+      'field' => [
         'title' => t('Link to profile'),
         'help' => t('Provide a simple link to the profile.'),
         'id' => 'profile_link',
-      ),
-    );
+      ],
+    ];
 
-    $data['profile']['edit_profile'] = array(
-      'field' => array(
+    $data['profile']['edit_profile'] = [
+      'field' => [
         'title' => t('Link to edit profile'),
         'help' => t('Provide a simple link to edit the profile.'),
         'id' => 'profile_link_edit',
-      ),
-    );
+      ],
+    ];
 
-    $data['profile']['delete_profile'] = array(
-      'field' => array(
+    $data['profile']['delete_profile'] = [
+      'field' => [
         'title' => t('Link to delete profile'),
         'help' => t('Provide a simple link to delete the profile.'),
         'id' => 'profile_link_delete',
-      ),
-    );
+      ],
+    ];
 
-    $data['profile']['profile_bulk_form'] = array(
+    $data['profile']['profile_bulk_form'] = [
       'title' => t('Profile operations bulk form'),
       'help' => t('Add a form element that lets you run operations on multiple profiles.'),
-      'field' => array(
+      'field' => [
         'id' => 'profile_bulk_form',
-      ),
-    );
+      ],
+    ];
 
     return $data;
   }

@@ -19,9 +19,9 @@ class ProfileDeleteForm extends ContentEntityDeleteForm {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('entity.user.canonical', array(
+    return new Url('entity.user.canonical', [
       'user' => $this->entity->getOwnerId(),
-    ));
+    ]);
   }
 
   /**

@@ -18,55 +18,55 @@ use Drupal\field\Entity\FieldConfig;
  */
 class ProfileAttachTest extends WebTestBase {
 
-  public static $modules = array('profile', 'text');
+  public static $modules = ['profile', 'text'];
 
   function setUp() {
     parent::setUp();
 
-    $this->type = entity_create('profile_type', array(
+    $this->type = entity_create('profile_type', [
       'id' => 'test',
       'label' => 'Test profile',
       'weight' => 0,
       'registration' => TRUE,
-    ));
+    ]);
     $this->type->save();
 
-    $this->field = array(
+    $this->field = [
       'field_name' => 'profile_fullname',
       'type' => 'text',
       'entity_type' => 'profile',
       'cardinality' => 1,
       'translatable' => FALSE,
-    );
+    ];
     $this->field = FieldStorageConfig::create($this->field);
     $this->field->save();
 
-    $this->instance = array(
+    $this->instance = [
       'entity_type' => $this->field->entity_type,
       'field_name' => $this->field->field_name,
       'bundle' => $this->type->id(),
       'label' => 'Full name',
       'required' => TRUE,
-      'widget' => array(
+      'widget' => [
         'type' => 'text_textfield',
-      ),
-    );
+      ],
+    ];
     $this->instance = FieldConfig::create($this->instance);
     $this->instance->save();
 
     $this->display = entity_get_display('profile', 'test', 'default')
-      ->setComponent($this->field->field_name, array(
+      ->setComponent($this->field->field_name, [
         'type' => 'text_default',
-      ));
+      ]);
     $this->display->save();
 
     $this->form = entity_get_form_display('profile', 'test', 'default')
-      ->setComponent($this->field->field_name, array(
+      ->setComponent($this->field->field_name, [
         'type' => 'string_textfield',
-      ));
+      ]);
     $this->form->save();
 
-    $this->checkPermissions(array(), TRUE);
+    $this->checkPermissions([], TRUE);
   }
 
   /**
@@ -82,19 +82,19 @@ class ProfileAttachTest extends WebTestBase {
       ->set('register', USER_REGISTER_VISITORS)
       ->set('verify_mail', 0)
       ->save();
-    user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('view own test profile'));
+    user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, ['view own test profile']);
 
     // Verify that the additional profile field is attached and required.
     $name = $this->randomMachineName();
     $pass_raw = $this->randomMachineName();
-    $edit = array(
+    $edit = [
       'name' => $name,
       'mail' => $this->randomMachineName() . '@example.com',
       'pass[pass1]' => $pass_raw,
       'pass[pass2]' => $pass_raw,
-    );
+    ];
     $this->drupalPostForm('user/register', $edit, t('Create new account'));
-    $this->assertRaw(format_string('@name field is required.', array('@name' => $this->instance->label)));
+    $this->assertRaw(format_string('@name field is required.', ['@name' => $this->instance->label]));
 
     // Verify that we can register.
     $edit["entity_" . $id . "[$field_name][0][value]"] = $this->randomMachineName();
@@ -105,10 +105,10 @@ class ProfileAttachTest extends WebTestBase {
     $this->assertTrue($new_user->isActive(), 'New account is active after registration.');
 
     // Verify that a new profile was created for the new user ID.
-    $profiles = entity_load_multiple_by_properties('profile', array(
+    $profiles = entity_load_multiple_by_properties('profile', [
       'uid' => $new_user->id(),
       'type' => $this->type->id(),
-    ));
+    ]);
     $profile = reset($profiles);
     $this->assertEqual($profile->get($field_name)->value, $edit["entity_" . $id . "[$field_name][0][value]"], 'Field value found in loaded profile.');
 

@@ -26,7 +26,7 @@ class DeleteMultiple extends ConfirmFormBase {
    *
    * @var array
    */
-  protected $profiles = array();
+  protected $profiles = [];
 
   /**
    * The private_tempstore factory.
@@ -99,15 +99,15 @@ class DeleteMultiple extends ConfirmFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $this->profiles = $this->privateTempStoreFactory->get('profile_multiple_delete_confirm')->get(\Drupal::currentUser()->id());
     if (empty($this->profiles)) {
-      return new RedirectResponse(\Drupal::url('admin/config/people/profiles', array('absolute' => TRUE)));
+      return new RedirectResponse(\Drupal::url('admin/config/people/profiles', ['absolute' => TRUE]));
     }
 
-    $form['profiles'] = array(
+    $form['profiles'] = [
       '#theme' => 'item_list',
       '#items' => array_map(function ($profile) {
         return SafeMarkup::checkPlain($profile->label());
       }, $this->profiles),
-    );
+    ];
     $form = parent::buildForm($form, $form_state);
 
     return $form;
@@ -121,7 +121,7 @@ class DeleteMultiple extends ConfirmFormBase {
       $this->storage->delete($this->profiles);
       $this->privateTempStoreFactory->get('profile_multiple_delete_confirm')->delete(\Drupal::currentUser()->id());
       $count = count($this->profiles);
-      $this->logger('content')->notice('Deleted @count profiles.', array('@count' => $count));
+      $this->logger('content')->notice('Deleted @count profiles.', ['@count' => $count]);
       drupal_set_message(\Drupal::translation()->formatPlural($count, 'Deleted 1 profile.', 'Deleted @count profiles.'));
     }
     $form_state->setRedirect('entity.profile.collection');

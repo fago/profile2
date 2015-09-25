@@ -71,10 +71,10 @@ class Label extends FieldPluginBase {
    *  Renderable array of the entity mark.
    */
   protected function getMark($entity) {
-    return array(
+    return [
       '#theme' => 'mark',
       '#mark_type' => node_mark($entity->id(), $entity->getChangedTime()),
-    );
+    ];
   }
 
 }
