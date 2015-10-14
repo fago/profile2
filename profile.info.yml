@@ -8,4 +8,3 @@ configure: entity.profile_type.collection
 dependencies:
   - user
   - field
-  - entity_reference

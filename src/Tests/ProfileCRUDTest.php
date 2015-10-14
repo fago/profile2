@@ -16,7 +16,7 @@ use Drupal\simpletest\KernelTestBase;
  */
 class ProfileCRUDTest extends KernelTestBase {
 
-  public static $modules = ['system', 'field', 'entity_reference', 'field_sql_storage', 'user', 'profile'];
+  public static $modules = ['system', 'field', 'field_sql_storage', 'user', 'profile'];
 
   function setUp() {
     parent::setUp();
