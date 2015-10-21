@@ -18,8 +18,8 @@ class ProfileViewBuilder extends EntityViewBuilder {
   /**
    * {@inheritdoc}
    */
-  protected function getBuildDefaults(EntityInterface $entity, $view_mode, $langcode) {
-    $defaults = parent::getBuildDefaults($entity, $view_mode, $langcode);
+  protected function getBuildDefaults(EntityInterface $entity, $view_mode) {
+    $defaults = parent::getBuildDefaults($entity, $view_mode);
     $defaults['#theme'] = 'profile';
     return $defaults;
   }
