@@ -9,9 +9,11 @@ namespace Drupal\profile\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\profile\Entity\ProfileTypeInterface;
 use Drupal\profile\Entity\Profile;
 use Drupal\user\UserInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Returns responses for ProfileController routes.
@@ -64,6 +66,15 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
   public function addPageTitle(ProfileTypeInterface $profile_type) {
     // @todo: edit profile uses this form too?
     return $this->t('Create @label', ['@label' => $profile_type->label()]);
+  }
+
+  public function userProfileForm(RouteMatchInterface $route_match, UserInterface $user, ProfileTypeInterface $profile_type) {
+    $profile = $this->entityManager()->getStorage('profile')->create([
+      'uid' => $user->id(),
+      'type' => $profile_type->id(),
+    ]);
+
+    return $this->entityFormBuilder()->getForm($profile, 'add', ['uid' => $user->id(), 'created' => REQUEST_TIME]);
   }
 
 }

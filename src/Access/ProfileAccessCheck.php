@@ -4,29 +4,20 @@
  * @file
  * Contains \Drupal\profile\Access\ProfileAccessCheck.
  */
+
 namespace Drupal\profile\Access;
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Access\AccessCheckInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Routing\Access\AccessInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Language\LanguageInterface;
 use Symfony\Component\Routing\Route;
-use Symfony\Component\HttpFoundation\Request;
 use Drupal\profile\Entity\ProfileTypeInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-
 
 /**
  * Checks access to add, edit and delete profiles.
  */
-class ProfileAccessCheck implements AccessCheckInterface {
-  /**
-   * A user account to check access for.
-   *
-   * @var \Drupal\Core\Session\AccountInterface
-   */
-  protected $account;
+class ProfileAccessCheck implements AccessInterface {
 
   /**
  * The entity manager.
@@ -36,39 +27,39 @@ class ProfileAccessCheck implements AccessCheckInterface {
   protected $entityManager;
 
   /**
-   * Service RequestStack
-   * @var RequestStack
-   */
-  protected $requestStack;
-
-  /**
-   * Constructs a EntityCreateAccessCheck object.
+   * Constructs a ProfileAccessCheck object.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
-   *   The request stack.
    */
-  public function __construct(EntityManagerInterface $entity_manager, RequestStack $requestStack) {
+  public function __construct(EntityManagerInterface $entity_manager) {
     $this->entityManager = $entity_manager;
-    $this->requestStack = $requestStack;
   }
 
   /**
-   * Implements AccessCheckInterface::applies().
+   * Checks access to the profile add page for the profile type.
+   *
+   * @param \Symfony\Component\Routing\Route $route
+   *   The route to check against.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The currently logged in account.
+   * @param \Drupal\profile\Entity\ProfileTypeInterface $profile_type
+   *   The profile type entity.
+   *
+   * @return bool|\Drupal\Core\Access\AccessResultInterface
+   *   The access result.
    */
-  public function applies(Route $route) {
-    return FALSE;
-  }
-
-  public function access(AccountInterface $account, ProfileTypeInterface $profile_type = NULL) {
+  public function access(Route $route, AccountInterface $account, ProfileTypeInterface $profile_type = NULL) {
     $access_control_handler = $this->entityManager->getAccessControlHandler('profile');
-    $operation = $this->requestStack->getCurrentRequest()->attributes->get('operation');
+
+    if ($account->hasPermission('administer profile types')) {
+      return AccessResult::allowed()->cachePerPermissions();
+    }
+    $operation = $route->getRequirement('_profile_access_check');
     if ($operation == 'add') {
-      return $access_control_handler->access($profile_type, $operation, LanguageInterface::LANGCODE_DEFAULT, $account, TRUE);
+      return $access_control_handler->access($profile_type, $operation, $account, TRUE);
     }
 
-    // If checking whether a profile of a particular type may be created.
     if ($profile_type) {
       return $access_control_handler->createAccess($profile_type->id(), $account, [], TRUE);
     }
@@ -82,4 +73,5 @@ class ProfileAccessCheck implements AccessCheckInterface {
     // No opinion.
     return AccessResult::neutral();
   }
+
 }
