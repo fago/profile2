@@ -1,6 +1,13 @@
 services:
-  profile.profile_access_checker:
+
+  access_check.profile_type.profile_access:
     class: Drupal\profile\Access\ProfileAccessCheck
-    arguments: ['@entity.manager', '@request_stack']
+    arguments: ['@entity.manager']
     tags:
       - { name: access_check, applies_to: _profile_access_check }
+
+  profile.route_subscriber:
+    class: Drupal\profile\Routing\RouteSubscriber
+    arguments: ['@entity.manager', '@current_user']
+    tags:
+      - { name: event_subscriber }

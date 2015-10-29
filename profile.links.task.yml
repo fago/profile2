@@ -9,17 +9,6 @@ entity.profile_type.collection_tab:
   base_route: entity.profile.collection
   title: 'Profile types'
 
-# Secondary tabs on main account edit page
-# Duplicate user edit tab
-entity.profile.edit_form:
-  route_name: entity.profile.edit_form
-  title: 'User account'
-  parent_id: entity.user.edit_form
-  weight: -100
-
 # Add tabs for each profile type
-entity.profile.add_form:
-  title: 'Add new profile'
-  route_name: entity.profile.add_form
-  parent_id: entity.user.edit_form
-  deriver: Drupal\profile\Plugin\Derivative\ProfileAddLocalTask
+entity.profile.user_profile_form:
+  deriver: Drupal\profile\Plugin\Derivative\ProfileLocalTask
